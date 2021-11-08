@@ -3,7 +3,7 @@
     <h2>{{ipo.company_name}}</h2>
     <q-stepper v-model="step" header-nav ref="stepper" color="secondary" animated>
       <q-step :name="1" title="overview" :done="done1">
-        <ipoOverview :ipo="ipo.ipo_id" />
+        <ipoOverview :ipo="ipo_id" />
       </q-step>
       <q-step :name="2" title="About Company" :done="done2">
         <IpoAboutCompany :about_html = "ipo.about_company_html" />
