@@ -8,10 +8,10 @@
       <q-step :name="2" title="About Company" :done="done2">
         <IpoAboutCompany :about_html = "ipo.about_company_html" />
       </q-step>
-      <q-step :name="3" title="Promoters" :done="done3">
+      <q-step :name="3" title="Subscriptions" :done="done3">
         <IpoPromoters :promoters="ipo.about_promoters_html" />
       </q-step>
-      <q-step :name="4" title="Promoters" :done="done4">
+      <q-step :name="4" title="Listing Data" :done="done4">
         <Editor />
       </q-step>
     </q-stepper>

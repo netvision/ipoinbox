@@ -1,13 +1,43 @@
 <template>
-   <h4 class="text-h4">About Company</h4>
-   <q-editor
-    v-model="html"
-    min-height="5rem"
-    :definitions="definitions"
-    :toolbar="[
-        ['bold', 'italic', 'strike', 'underline'],
-        ['insert_img']
-      ]" />
+  <q-tabs
+    v-model="tab"
+    dense
+    class="text-grey"
+    active-color="primary"
+    indicator-color="primary"
+    align="left"
+    narrow-indicator
+  >
+    <q-tab name="info" label="Company Info" />
+    <q-tab name="promoters" label="Promoters" />
+    <q-tab name="objects" label="Objects of the Issue" />
+  </q-tabs>
+  <q-separator />
+
+  <q-tab-panels v-model="tab" animated>
+    <q-tab-panel name="info">
+      <div class="text-h6">Company Info</div>
+      <q-editor
+        v-model="html"
+        min-height="5rem"
+        :definitions="definitions"
+        :toolbar="[
+            ['bold', 'italic', 'strike', 'underline'],
+            ['insert_img']
+          ]" />
+    </q-tab-panel>
+
+    <q-tab-panel name="promoters">
+      <div class="text-h6">Promoters</div>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    </q-tab-panel>
+
+    <q-tab-panel name="objects">
+      <div class="text-h6">Objects of the Issue</div>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    </q-tab-panel>
+  </q-tab-panels>
+   
 </template>
 <script>
 import { defineComponent } from 'vue'
@@ -54,7 +84,7 @@ export default defineComponent({
 
 <script setup>
 import { ref  } from 'vue' 
-
+  const tab = ref('info')
   const props = defineProps({
     about_html: String
   })
