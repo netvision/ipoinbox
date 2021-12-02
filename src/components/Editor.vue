@@ -5,6 +5,7 @@
       :definitions="definitions" 
       ref="editor"
       :toolbar= "[
+        ['bold', 'italic', 'strike', 'underline', 'subscript', 'superscript'],
         [
           {
             label: $q.lang.editor.align,
@@ -12,17 +13,10 @@
             fixedLabel: true,
             list: 'only-icons',
             options: ['left', 'center', 'right', 'justify']
-          },
-          {
-            label: $q.lang.editor.align,
-            icon: $q.iconSet.editor.align,
-            fixedLabel: true,
-            options: ['left', 'center', 'right', 'justify']
           }
         ],
-        ['bold', 'italic', 'strike', 'underline', 'subscript', 'superscript'],
-        ['token', 'hr', 'link', 'custom_btn'],
-        ['print', 'fullscreen', 'insert_img'],
+        ['hr', 'link'],
+        ['insert_img'],
         [
           {
             label: $q.lang.editor.formatting,
@@ -89,74 +83,29 @@
         times_new_roman: 'Times New Roman',
         verdana: 'Verdana'
       }" />
+      <q-btn color="primary" label="Save" @click="saveContent" />
   </div>
-  <a class="btn" @click="toggleShow">set avatar</a>
-	<my-upload field="img"
-        @crop-success="cropSuccess"
-        @crop-upload-success="cropUploadSuccess"
-        @crop-upload-fail="cropUploadFail"
-        v-model="show"
-		:width="300"
-		:height="300"
-    :langExt = "lang"
-		url="/upload"
-		:params="params"
-		:headers="headers"
-		img-format="png"></my-upload>
-	<img :src="imgDataUrl">
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 import 'babel-polyfill'; // es6 shim
-import myUpload from 'vue-image-crop-upload';
 export default defineComponent({
   name: 'Editor',
-  components: {
-			'my-upload': myUpload
-		},
+  props: ['htmlContent'],
   data() {
     return {
         definitions: {
                 insert_img: {
-                    tip: 'Insertar Imagen',
+                    tip: 'Insert Image',
                     icon: 'photo',
                     handler: this.insertImg // handler will call insertImg() method
                 }
             },
-        lang: {
-            hint: 'Click or drag the file here to upload',
-            loading: 'Uploading…',
-            noSupported: 'Browser is not supported, please use IE10+ or other browsers',
-            success: 'Upload success',
-            fail: 'Upload failed',
-            preview: 'Preview',
-            btn: {
-              off: 'Cancel',
-              close: 'Close',
-              back: 'Back',
-              save: 'Save'
-            },
-            error: {
-              onlyImg: 'Image only',
-              outOfSize: 'Image exceeds size limit: ',
-              lowestPx: 'Image\'s size is too low. Expected at least: '
-            }
-        },
         post: {
-            body: "Hello World"
+            body: this.htmlContent
             },
-        show: true,
-			  params: {
-				  token: '123456798',
-				  name: 'avatar'
-			  },
-			  headers: {
-				  smail: '*_~'
-			  },
-			  imgDataUrl: '' // the datebase64 url of created image
-      }
-        
+			}
     },
     methods: {
         insertImg() { // insertImg method
@@ -176,49 +125,16 @@ export default defineComponent({
                 let dataUrl = ''
                 reader.onloadend = function() {
                     dataUrl = reader.result
-                   
-                    // append result to the body of your post
-                    edit.runCmd('insertHTML','<div><img src="' + dataUrl + '" /></div>', true) 
+                    edit.runCmd('insertHTML','<div><img style="float:left; max-width:300px" src="' + dataUrl + '" /></div>', true) 
                 }
                 reader.readAsDataURL(file)
             }
             input.click()
         },
-        toggleShow() {
-				this.show = !this.show;
-			},
-            /**
-			 * crop success
-			 *
-			 * [param] imgDataUrl
-			 * [param] field
-			 */
-			cropSuccess(imgDataUrl, field){
-				console.log('-------- crop success --------');
-				this.imgDataUrl = imgDataUrl;
-			},
-			/**
-			 * upload success
-			 *
-			 * [param] jsonData  server api return data, already json encode
-			 * [param] field
-			 */
-			cropUploadSuccess(jsonData, field){
-				console.log('-------- upload success --------');
-				console.log(jsonData);
-				console.log('field: ' + field);
-			},
-			/**
-			 * upload fail
-			 *
-			 * [param] status    server api return error status, like 500
-			 * [param] field
-			 */
-			cropUploadFail(status, field){
-				console.log('-------- upload fail --------');
-				console.log(status);
-				console.log('field: ' + field);
-			}
+
+        saveContent(){
+          this.$emit('update', this.post)
+        }
     }
 })
 </script>

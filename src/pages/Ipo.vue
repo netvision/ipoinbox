@@ -6,13 +6,19 @@
         <ipoOverview :ipo="ipo_id" />
       </q-step>
       <q-step :name="2" title="About Company" :done="done2">
-        <IpoAboutCompany :about_html = "ipo.about_company_html" />
+        <IpoAboutCompany :ipo_id = "ipo_id" />
       </q-step>
-      <q-step :name="3" title="Subscriptions" :done="done3">
-        <IpoPromoters :promoters="ipo.about_promoters_html" />
+      <q-step :name="3" title="Schedule" :done="done3">
+        <IpoSchedule :IpoId="ipo_id" />
       </q-step>
-      <q-step :name="4" title="Listing Data" :done="done4">
-        <Editor />
+      <q-step :name="4" title="Subscriptions" :done="done4">
+        <IpoSubscription :IpoId="ipo_id" />
+      </q-step>
+      <q-step :name="5" title="Allotments" :done="done5">
+        <IpoAllotments :IpoId="ipo_id" />
+      </q-step>
+      <q-step :name="6" title="Listing Data" :done="done6">
+        <IpoListing />
       </q-step>
     </q-stepper>
   </q-page>
@@ -24,8 +30,10 @@
   import { api } from '../boot/axios'
   import IpoOverview from '../components/IpoOverview.vue'
   import IpoAboutCompany from '../components/IpoAboutCompany.vue'
-  import IpoPromoters from '../components/IpoPromoters.vue'
-  import Editor from '../components/Editor.vue'
+  import IpoSubscription from '../components/IpoSubscription.vue'
+  import IpoSchedule from '../components/IpoSchedule.vue'
+  import IpoAllotments from '../components/IpoAllotments.vue'
+  import IpoListing from '../components/IpoListing.vue'
   const route = useRoute()
   const ipo_id = route.params.id
   const ipo = ref({})
@@ -36,5 +44,6 @@
   const done4 = ref(false)
   onMounted(async() => {
     ipo.value = await api.get('/ipo/id/'+ipo_id).then(r => r.data.data)
+    console.log(ipo.value)
   })
 </script>

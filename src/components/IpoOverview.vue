@@ -58,6 +58,13 @@
     </div>
     <div class="row">
       <div class="col q-pa-md">
+        <q-input v-model="overview.face_value" label="Face Value">
+          <template v-slot:before>
+            &#8377; 
+          </template>
+        </q-input>
+      </div> 
+      <div class="col q-pa-md">
         <q-input v-model="overview.price_band_low" label="Price Band (Low)">
           <template v-slot:before>
             &#8377; 
@@ -71,13 +78,6 @@
           </template>
         </q-input>
       </div>
-      <div class="col q-pa-md">
-        <q-input v-model="overview.face_value" label="Face Value">
-          <template v-slot:before>
-            &#8377; 
-          </template>
-        </q-input>
-      </div>      
     </div>
     <div class="row">
       <div class="col q-pa-md">
@@ -97,6 +97,18 @@
           <template v-slot:before>
             &#8377; 
           </template>
+        </q-input>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col q-pa-md">
+        <q-input v-model="overview.fresh_issue" label="Fresh Issue">
+          
+        </q-input>
+      </div>
+      <div class="col q-pa-md">
+        <q-input v-model="overview.offer_for_sale" label="Offer for Sale">
+          
         </q-input>
       </div>
       <div class="col q-pa-md">
@@ -212,7 +224,7 @@
 import { ref, onBeforeMount} from 'vue'
 import { api, axios } from '../boot/axios'
 const props = defineProps({
-  ipo: Number
+  ipo: String
 })
 const overview = ref({})
 const ipodata = ref({})
@@ -252,6 +264,7 @@ onBeforeMount(async()=>{
   registrars.value = await axios.get('https://droplet.netserve.in/registrars').then(r => r.data)
   brlms.value = await axios.get('https://droplet.netserve.in/brlms').then(r => r.data)
   const ipo = await api.get('/ipo/id/'+id).then(r => r.data.data)
+  console.log(ipo)
   ipodata.value = ipo
   overview.value = {
     company_name: ipo.company_name,
@@ -265,6 +278,8 @@ onBeforeMount(async()=>{
     issue_size: ipo.issue_size,
     application_amount: (ipo.application_amount > 0) ? ipo.application_amount : (+ipo.bit_lot)*(+ipo.price_band_high),
     anchor_date: ipo.anchor_date,
+    fresh_issue: ipo.fresh_issue,
+    offer_for_sale: ipo.offer_for_sale,
   }
 })
 </script>
