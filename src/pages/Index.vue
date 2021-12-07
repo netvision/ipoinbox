@@ -76,8 +76,8 @@ const selScrip = (e, s, d) => {
     scripData.value = {detail: scripDetail[0], eod: scripEod[0]}
 }
 onMounted(async() =>{
-  scrips.value = await axios.get('http://cmotswebapi.cmots.com/SunnyModi/CompanyMaster').then(r => r.data.data)
-  eods.value = await axios.get('http://cmotswebapi.cmots.com/SunnyModi/NseEODPrices-Unadjusted').then(r => r.data.data)
+  scrips.value = await axios.get('https://cmotswebapi.cmots.com/SunnyModi/CompanyMaster').then(r => r.data.data)
+  eods.value = await axios.get('https://cmotswebapi.cmots.com/SunnyModi/NseEODPrices-Unadjusted').then(r => r.data.data)
 })
 
 </script>
