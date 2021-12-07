@@ -42,6 +42,8 @@
   const done2 = ref(false)
   const done3 = ref(false)
   const done4 = ref(false)
+  const done5 = ref(false)
+  const done6 = ref(false)
   onMounted(async() => {
     ipo.value = await api.get('/ipo/id/'+ipo_id).then(r => r.data.data)
     console.log(ipo.value)

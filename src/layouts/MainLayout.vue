@@ -8,11 +8,10 @@
           round
           icon="menu"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
         />
 
         <q-toolbar-title>
-          IPO Inbox
+          <router-link to="/" style="text-decoration:none">IPO Inbox</router-link>
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
