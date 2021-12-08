@@ -2,22 +2,64 @@
 
         <q-table
           class="my-sticky-header-table"
-          style="height: 400px"
+          color="primary"
+          card-class="bg-amber-5 text-brown"
+          table-class="text-grey-8"
+          table-header-class="text-brown"
+          style="height: 700px"
           title="NIFTY 50"
           :rows="rows"
           :columns="columns"
           row-key="name"
-          flat
-          bordered
-           virtual-scroll
+          virtual-scroll
           v-model:pagination="pagination"
           :rows-per-page-options="[0]"
+          @row-click = 'showDetail'
         >
-        <template v-slot:top>
-          <h4 class="text-5">NIFTY 50</h4>
-          <p>{{nifty50data.lastPrice}} ({{nifty50data.change}})</p>
-        </template>
+          <template v-slot:top>
+            <h4 class="text-5">NIFTY 50 <q-badge align="bottom">{{nifty50data.lastPrice}} ({{numFormat(nifty50data.change)}})</q-badge></h4>
+          </template>
         </q-table>
+        <q-dialog v-model="card">
+          <q-card class="my-card">
+              <q-img :src="scrip.chartTodayPath" />
+
+              <q-card-section>
+                <div class="row no-wrap items-center">
+                  <div class="col text-h6 ellipsis">
+                    {{scrip.meta.companyName}}
+                  </div>
+                  <div class="col-auto text-grey text-caption q-pt-md row no-wrap items-center">
+                    <q-icon name="place" />
+                    {{scrip.lastUpdateTime}}
+                  </div>
+                </div>
+              </q-card-section>
+
+              <q-card-section class="q-pt-none">
+                <q-list bordered separator v-if="scrip">
+                <q-item clickable v-ripple>
+                    <q-item-section>
+                        <q-item-label overline>Open</q-item-label>
+                        <q-item-label>{{scrip.open}} <q-badge align="bottom">{{scrip.change}}</q-badge></q-item-label>
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label overline>High</q-item-label>
+                        <q-item-label>{{scrip.dayHigh}}</q-item-label>
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label overline>Low</q-item-label>
+                        <q-item-label>{{scrip.dayLow}}</q-item-label>
+                    </q-item-section>
+                    <q-item-section>
+                        <q-item-label overline>CMP</q-item-label>
+                        <q-item-label>{{scrip.lastPrice}}</q-item-label>
+                    </q-item-section>
+                </q-item>
+           </q-list>
+              </q-card-section>
+            </q-card>
+        </q-dialog>
 </template>
 <script setup>
 import { api, axios } from '../boot/axios'
@@ -50,6 +92,18 @@ let OPt = {
 const niftydata = ref(nifty50)
 const nifty50data = ref({})
 const rows = ref([])
+const card = ref(false)
+const scrip = ref({})
+
+const numFormat = (value) => {
+  return new Intl.NumberFormat('en-US', {maximumFractionDigits : 2}).format(value)
+}
+
+const showDetail = (e, r, i) => {
+  console.log(r)
+  scrip.value = r
+  card.value = true
+}
 
 onMounted(async() => {
     let nifty = await axios.request(nify50OPt).then(r=> r.data.body)

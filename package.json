@@ -14,8 +14,10 @@
     "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "core-js": "^3.6.5",
+    "moment": "^2.29.1",
     "quasar": "^2.0.0",
     "vue-image-crop-upload": "^3.0.3",
+    "vue-multiselect": "^3.0.0-alpha.2",
     "vuex": "^4.0.1"
   },
   "devDependencies": {
