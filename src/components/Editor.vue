@@ -85,6 +85,31 @@
       }" />
       <q-btn color="primary" label="Save" @click="saveContent" />
   </div>
+  <q-dialog v-model="imgDialog">
+    <q-card class="my-card">
+      <q-card-section>
+        <q-uploader
+        url="https://droplet.netserve.in/ipo/editimg"
+        color="teal"
+        field-name="image"
+        flat
+        bordered
+        auto-upload
+        style="max-width: 500px"
+        @uploaded = 'getImgSrc'
+      />
+      <q-input v-model="width" label="Width in px" />
+      <q-select v-model="float" :options="['left', 'right']" label="Align" />
+      </q-card-section>
+
+      <q-separator />
+
+      <q-card-actions>
+        <q-btn flat @click="insert">Insert</q-btn>
+        <q-btn flat @click="imgDialog = false">Cancel</q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -105,12 +130,20 @@ export default defineComponent({
         post: {
             body: this.htmlContent
             },
+        imgDialog: false,
+        float: 'left', 
+        width: '',
+        editImgSrc: ''
 			}
     },
     methods: {
-        insertImg() { // insertImg method
+        insertImg() { 
+          this.imgDialog = true
+          /*
+          // insertImg method
             const post = this.post
             const edit = this.$refs.editor
+            
             // create an input file element to open file dialog
             const input = document.createElement('input')
             input.type = 'file'
@@ -130,6 +163,19 @@ export default defineComponent({
                 reader.readAsDataURL(file)
             }
             input.click()
+            */
+            
+        },
+
+        insert(){
+          const edit = this.$refs.editor
+          const style = '{float:'+this.float+', padding:4px}'
+          edit.runCmd('insertHTML','<div style="clear:both; padding:4px; margin:4px"><img src="'+this.editImgSrc+'" style="width:'+this.width+'; float:'+this.float+'" /></div>', true)
+          this.imgDialog = false
+        },
+
+        getImgSrc(files){
+          this.editImgSrc = JSON.parse(files.xhr.response)
         },
 
         saveContent(){

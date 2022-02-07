@@ -8,7 +8,7 @@
             no-thumbnails
             auto-upload
             :form-fields = "[{name:'ipo_id', value: ipo.ipo_id}]"
-            url="https://droplet.netserve.in/ipo/allotment_pdf"
+            url="https://droplet.netserve.in/ipo/pdfupload"
           />
         </div>
         <div class="col q-pa-md">

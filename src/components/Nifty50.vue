@@ -107,9 +107,10 @@ const showDetail = (e, r, i) => {
 
 onMounted(async() => {
     let nifty = await axios.request(nify50OPt).then(r=> r.data.body)
-    console.log(nifty)
-    nifty50data.value = nifty.data.shift()
-    rows.value = nifty.data
+    //console.log(nifty)
+    const[x, ...y] = nifty.data
+    nifty50data.value = x
+    rows.value = y
     //nseindices.value = await axios.get('http://localhost:3000/nse/get_indices').then(r => r.data)
 })
 </script>
