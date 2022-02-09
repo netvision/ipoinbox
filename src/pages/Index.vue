@@ -19,10 +19,10 @@
           @filter="filterFn">
         </q-select>
         </div>
-        <NiftyEod />
+        
       </div>
       <div class="col col-4">
-        <Nifty50 />
+        <NiftyEod />
       </div>
     </div>
   </q-page>
@@ -33,7 +33,7 @@ import { ref, onMounted } from 'vue'
 import { axios } from '../boot/axios'
 import { useRouter } from 'vue-router'
 import NiftyEod from 'components/NiftyEod'
-import Nifty50 from 'components/Nifty50'
+//import Nifty50 from 'components/Nifty50'
 
 const ipos = ref([])
 const ipo = ref('')

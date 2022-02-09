@@ -1,13 +1,14 @@
 <template>
     <div>
         <h4 class="text-h4">NSE on {{dateFormat(dt)}}</h4>
-        <VueMultiselect
+        <VueMultiselect class="q-mb-md"
             v-model="selected"
             label="CompanyName"
             track-by="CompanyName"
             :options="scripts"
             @select="getScrip">
         </VueMultiselect>
+        <q-space />
         <q-card class="my-card">
             <q-card-section>
                 <div class="text-h6">{{selected.CompanyName}}</div>
@@ -108,6 +109,7 @@ const selected = ref({})
 const dateFormat = (val) => {
     return moment(val).format("DD-MM-YYYY")
 }
+
 const getScrip = (selectedOption, id) => {
     selEod.value = eod.value.filter(scrip => scrip.co_code === selectedOption.co_code)
 }
