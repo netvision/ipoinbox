@@ -55,10 +55,10 @@ const filterFn = (val, update, abort) => {
 
 const goTo = (ip) => {
   if(ip){
-    router.push('/ipo/'+ip.ipo_id)
+    router.push({ name: 'ipo', params: { ipo_id: ip.ipo_id } })
   }
   else{ 
-    router.push('/ipo/'+ipo.value.ipo_id)
+    router.push({ name: 'ipo', params: { ipo_id: ipo.value.ipo_id } })
   }
   
 }
