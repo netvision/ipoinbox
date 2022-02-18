@@ -1,4 +1,5 @@
 <template>
+<q-ajax-bar ref="bar" position="top" color="accent" size="10px" />
   <q-page class="q-pa-md">
     <div class="row">
       <div class="col col-8 q-pa-md">
