@@ -59,13 +59,13 @@
             </q-item-section>
             <q-item-section>
               <q-item-label overline>Issue Price</q-item-label>
-              <q-item-label class="text-bold">{{ipo.issue_price}}</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{ipo.issue_price}}</q-item-label>
             </q-item-section>
           </q-item>
           <q-item>
             <q-item-section>
-              <q-item-label overline>Listing At</q-item-label>
-              <q-item-label class="text-bold">{{nse.listing_price}}</q-item-label>
+              <q-item-label overline>Listed At</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{nse.listing_price}}</q-item-label>
             </q-item-section>
             <q-item-section>
               <q-item-label overline>Pre-open Volume</q-item-label>
@@ -75,15 +75,15 @@
           <q-item>
             <q-item-section>
               <q-item-label overline>High</q-item-label>
-              <q-item-label class="text-bold">{{nse.high}}</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{nse.high}}</q-item-label>
             </q-item-section>
             <q-item-section>
               <q-item-label overline>Low</q-item-label>
-              <q-item-label class="text-bold">{{nse.low}}</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{nse.low}}</q-item-label>
             </q-item-section>
             <q-item-section>
               <q-item-label overline>Close</q-item-label>
-              <q-item-label class="text-bold">{{nse.close}}</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{nse.close}}</q-item-label>
             </q-item-section>
           </q-item>
           <q-item>
@@ -110,21 +110,21 @@
             </q-item-section>
             <q-item-section>
               <q-item-label overline>Open</q-item-label>
-              <q-item-label class="text-bold">{{eod.Open}}</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{eod.Open}}</q-item-label>
             </q-item-section>
             <q-item-section>
               <q-item-label overline>Closing</q-item-label>
-              <q-item-label class="text-bold">{{eod.Close}}</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{eod.Close}}</q-item-label>
             </q-item-section>
           </q-item>
           <q-item>
             <q-item-section>
               <q-item-label overline>Day High</q-item-label>
-              <q-item-label class="text-bold">{{eod.High}}</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{eod.High}}</q-item-label>
             </q-item-section>
             <q-item-section>
               <q-item-label overline>Day Low</q-item-label>
-              <q-item-label class="text-bold">{{eod.Low}}</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{eod.Low}}</q-item-label>
             </q-item-section>
             <q-item-section>
               <q-item-label overline>Volume</q-item-label>
@@ -135,12 +135,12 @@
           <q-item>
             <q-item-section>
               <q-item-label overline>Lifetime High</q-item-label>
-              <q-item-label class="text-bold">{{eod.LifeTimeHigh}}</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{eod.LifeTimeHigh}}</q-item-label>
               <q-item-label caption class="text-bold text-italic">on {{date.formatDate(eod.highdate, 'DD-MM-YYYY')}}</q-item-label>
             </q-item-section>
             <q-item-section>
               <q-item-label overline>Lifetime Low</q-item-label>
-              <q-item-label class="text-bold">{{eod.LifeTimeLow}}</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{eod.LifeTimeLow}}</q-item-label>
               <q-item-label caption class="text-bold text-italic">on {{date.formatDate(eod.lowdate, 'DD-MM-YYYY')}}</q-item-label>
             </q-item-section>
             <q-item-section>
@@ -153,34 +153,69 @@
       </div>
       </q-card-section>
     </q-card>
-    <q-card flat class="q-mt-md rounded-border bg-orange-1">
-      <q-card-section>
-        <div class="text-h5">Company Info</div>
-        <div v-html="ipo.about_html" />
-      </q-card-section>
-    </q-card>
-    <Promoters :ipo_id="ipo_id" />
+    <div v-if="ipo.blog_id" id="info">
+      <Info :id="ipo.blog_id" />
+    </div>
+    <div id="promoters">
+      <Promoters :ipo_id="ipo_id" />
+    </div>
+    <div id="objects" v-if="ipo.issue_objects_html">
+      <Objects :content="ipo.issue_objects_html" />
+    </div>
+    <div id="issue-detail">
+      <q-card flat class="q-mt-md rounded-border bg-orange-1">
+        <q-card-section>
+          <div class="text-h5">Issue Overview</div>
+        </q-card-section>
+        <q-card-section>
+          <q-item>
+            <q-item-section>
+              <q-item-label overline>Offer Period</q-item-label>
+              <q-item-label>Issue/Bid Opens on : <span class="text-bold">{{date.formatDate(ipo.open_date, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
+              <q-item-label>Issue/Bid Closes on : <span class="text-bold">{{date.formatDate(ipo.close_date, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label class="text-bold">Price Band: &#8377;{{ipo.price_band_low}} - &#8377;{{ipo.price_band_high}}</q-item-label>
+              <q-item-label class="text-bold text-italic">Lot Size {{ipo.lot_size}}</q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label overline>Market Cap</q-item-label>
+              <q-item-label class="text-bold">&#8377;{{eod.mcap}} Cr.</q-item-label>
+              <q-item-label caption class="text-bold text-italic">as on {{date.formatDate(eod.date, 'DD-MM-YYYY')}}</q-item-label>
+            </q-item-section>
+          </q-item> 
+        </q-card-section>
+      </q-card>
+    </div>
+    <div id="financials" v-if="ipo.financials">
+      <Financials :content="ipo.financials" />
+    </div>
+    <div v-if="ipo.peers" id="peers">
+      <Peers :content="ipo.peers" />
+    </div>
     <pre>{{ipo}}</pre>
-    <pre>{{curInfo}}</pre>
-    <pre>{{eod}}</pre>
-    <q-page-scroller expand position="top" :scroll-offset="450" :offset="[0, 0]">
-      <div class="q-pa-sm flex q-gutter-sm bg-orange-3 rounded-borders full-width">
-        <span>{{ipo.company_name}}</span> <q-space /><q-separator color="orange" vertical /> <a @click="scrollTo('promoters')">Promoters</a> <q-separator color="orange" vertical /> <a :href="bse.url">BSE</a><q-separator color="orange" vertical /><span> Registrar: <a :href="registrar.url">{{registrar.name}}</a></span>
-      </div>
-    </q-page-scroller>
   </q-page>
+  <q-page-scroller expand position="top" :scroll-offset="350" :offset="[0, 0]">
+    <div class="q-pa-sm flex q-gutter-sm bg-orange-3 rounded-borders full-width">
+      <span class="text-h5">{{ipo.company_name}}</span><q-space /><q-btn dense flat label="Info" @click="goTo('info')" /><q-separator color="orange" vertical /><q-btn flat dense label="promoters" @click="goTo('promoters')" /><q-separator color="orange" vertical /><q-btn dense flat label="objects" @click="goTo('objects')" /><q-separator color="orange" vertical /><q-btn dense flat label="Schedule" @click="goTo('issue-detail')" /><q-separator color="orange" vertical /><q-btn dense flat label="Financials" @click="goTo('financials')" /><q-separator color="orange" vertical /><q-btn flat dense label="peers" @click="goTo('peers')" />
+    </div>
+  </q-page-scroller>
 </template>
 
 <script setup>
-  import { ref, onBeforeMount } from 'vue'
+  import { ref, onMounted } from 'vue'
   import { useRoute } from 'vue-router'
   import { axios } from '../boot/axios'
   import { useMeta, scroll } from 'quasar'
   import { date } from 'quasar'
   import Promoters from '../components/Promoters.vue'
+  import Info from '../components/Info.vue'
+  import Financials from '../components/Financials.vue'
+  import Peers from '../components/Peers.vue'
+  import Objects from '../components/Objects.vue'
   const { getScrollTarget, setVerticalScrollPosition } = scroll
   const route = useRoute()
-  const ipo_id = route.params.ipo_id
+  const ipo_id = route.params.id.split('-')[0]
   const ipo = ref({})
   const bse = ref({})
   const nse = ref({})
@@ -188,15 +223,19 @@
   const eod = ref({})
   const curInfo = ref({})
 
-  const scrollTo = (el) => {
+  const goTo = (el) => {
     const ele = document.getElementById(el)
     const target = getScrollTarget(ele)
-    const offset = ele.offsetTop - ele.scrollHeight
+    const offset = ele.offsetTop - ele.scrollHeight - 100
     console.log(offset)
     const duration = 1000
     setVerticalScrollPosition(target, offset, duration)
+    /*
+   console.log(ele)
+   ele.scrollIntoView()
+   */
   }
-  onBeforeMount(async() => {
+  onMounted(async() => {
     ipo.value = await axios.get('https://droplet.netserve.in/ipos/'+ipo_id+'?expand=registrar,promoters,listings,subscriptions,sector').then(r => r.data)
     let listings = ipo.value.listings
     nse.value = listings.filter(r => r.exchange == 'NSE')[0]
@@ -210,6 +249,6 @@
       title: ipo.value.company_name,
       titleTemplate: title => `${title} - IPO Inbox`,
     })
-    console.log(ipo.value.promoters)
+    console.log(ipo.value.peers)
   })
 </script>

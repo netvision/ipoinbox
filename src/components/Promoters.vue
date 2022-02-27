@@ -1,12 +1,9 @@
 /* eslint-disable vue/valid-template-root */
 <template>
-<q-card flat id="promoters" class="q-mt-md rounded-border bg-orange-1">
-    <q-card-section>
-    <div class="text-h5">Promoters</div>
-    </q-card-section>
-    <q-separator />
+<q-card flat class="q-mt-md rounded-border bg-orange-1">
+<q-card-section><div class="text-h5">Promoters</div></q-card-section>
     <q-card-section horizontal class="q-pa-md q-gutter-md">
-    <q-card v-for="promoter in promoters" :key="promoter.id" flat bordered>
+        <q-card v-for="promoter in promoters" :key="promoter.id" flat>
             <q-card-section horizontal>
                 <q-card-section class="col-5 flex items-start">
                 <q-img
@@ -32,10 +29,10 @@
 </q-card>
 </template>
 <script setup>
-import { defineProps, ref, onMounted  } from 'vue'
+import { ref, onMounted  } from 'vue'
 import { axios } from '../boot/axios'
 const props = defineProps({
-    ipo_id: Number
+    ipo_id: String
   })
 console.log(props.ipo_id)
 const promoters = ref([])

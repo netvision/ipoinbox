@@ -42,9 +42,6 @@ const router = useRouter()
 const latestIpos = ref([])
 
 const getLatestIpos = () => {
-  ipos.value.sort(function(a,b){
-    return new Date(b.open_date) - new Date(a.open_date)
-  })
   latestIpos.value = ipos.value.slice(0, 8)
 }
 const filterFn = (val, update, abort) => {
@@ -56,17 +53,20 @@ const filterFn = (val, update, abort) => {
 
 const goTo = (ip) => {
   if(ip){
-    router.push({ name: 'ipo', params: { ipo_id: ip.ipo_id } })
+    console.log(encodeURI(ip.company_name))
+    router.push('/ipo/'+ip.ipo_id+'-'+encodeURI(ip.company_name))
   }
   else{ 
-    router.push({ name: 'ipo', params: { ipo_id: ipo.value.ipo_id } })
+    router.push('/ipo/'+ipo.value.ipo_id+'-'+encodeURI(ipo.value.company_name))
   }
   
 }
 onMounted(async() => {
   ipos.value = await axios.get('https://droplet.netserve.in/ipos').then(r => r.data)
+  ipos.value.sort(function(a,b){
+    return new Date(b.open_date) - new Date(a.open_date)
+  })
   getLatestIpos()
-  console.log(latestIpos.value[1])
 })
 /*
 let looser = {
