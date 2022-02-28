@@ -159,33 +159,41 @@
     <div id="promoters">
       <Promoters :ipo_id="ipo_id" />
     </div>
-    <div id="objects" v-if="ipo.issue_objects_html">
-      <Objects :content="ipo.issue_objects_html" />
-    </div>
     <div id="issue-detail">
       <q-card flat class="q-mt-md rounded-border bg-orange-1">
         <q-card-section>
           <div class="text-h5">Issue Overview</div>
         </q-card-section>
         <q-card-section>
-          <q-item>
-            <q-item-section>
-              <q-item-label overline>Offer Period</q-item-label>
-              <q-item-label>Issue/Bid Opens on : <span class="text-bold">{{date.formatDate(ipo.open_date, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
-              <q-item-label>Issue/Bid Closes on : <span class="text-bold">{{date.formatDate(ipo.close_date, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label class="text-bold">Price Band: &#8377;{{ipo.price_band_low}} - &#8377;{{ipo.price_band_high}}</q-item-label>
-              <q-item-label class="text-bold text-italic">Lot Size {{ipo.lot_size}}</q-item-label>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label overline>Market Cap</q-item-label>
-              <q-item-label class="text-bold">&#8377;{{eod.mcap}} Cr.</q-item-label>
-              <q-item-label caption class="text-bold text-italic">as on {{date.formatDate(eod.date, 'DD-MM-YYYY')}}</q-item-label>
-            </q-item-section>
-          </q-item> 
+          <div class="row">
+            <div class="q-pa-md col-4">
+                <q-item-label>Issue/Bid Opens on : <span class="text-bold">{{date.formatDate(ipo.open_date, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
+                <q-item-label>Issue/Bid Closes on : <span class="text-bold">{{date.formatDate(ipo.close_date, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
+                <q-item-label>Anchor Investors bids on : <span class="text-bold">{{date.formatDate(ipo.anchor_date, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
+            </div>
+            <q-separator vertical spaced color="orange" />
+            <div class="q-pa-md col">
+                <q-item-label>Price Band: <span class="text-bold">&#8377;{{ipo.price_band_low}} - &#8377;{{ipo.price_band_high}}</span></q-item-label>
+                <q-item-label class="text-italic">Lot Size: <span class="text-bold">{{ipo.lot_size}}</span></q-item-label>
+                <q-item-label class="text-italic">Application Amount: <span class="text-bold"> &#8377;{{ipo.lot_size * ipo.price_band_high}}</span></q-item-label>
+            </div>
+            <q-separator vertical spaced color="orange" />
+            <div class="q-pa-md col">
+              <q-item-label>Issue Size: <span class="text-bold">&#8377;{{ipo.issue_size}} Crore </span></q-item-label>
+              <q-item-label class="text-italic">Fresh Issue: <span class="text-bold">{{ipo.fresh_issue}}</span></q-item-label>
+              <q-item-label class="text-italic">Offer For Sale: <span class="text-bold">{{ipo.offer_for_sale}}</span></q-item-label>
+            </div>
+            <q-separator vertical spaced color="orange" />
+            <div class="q-pa-md col">
+              <q-item-label>Market Cap: <span class="text-bold">&#8377;{{ipo.issue_size}} Crore </span></q-item-label>
+              <q-item-label class="text-italic">Total Shares: <span class="text-bold">{{ipo.no_of_total_shares}}</span></q-item-label>
+            </div>
+          </div>
         </q-card-section>
       </q-card>
+    </div>
+    <div id="objects" v-if="ipo.issue_objects_html">
+      <Objects :content="ipo.issue_objects_html" />
     </div>
     <div id="financials" v-if="ipo.financials">
       <Financials :content="ipo.financials" />

@@ -7,7 +7,7 @@
     </q-card>
 </template>
 <script setup>
-import { defineProps, ref, onMounted  } from 'vue'
+import { ref, onMounted  } from 'vue'
 import { axios } from '../boot/axios'
 
 const props = defineProps({
@@ -38,7 +38,12 @@ h3{
 }
 
 .wp-style{
-  color: #222; font-family: 'Open Sans', sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; margin: 0 0 14px;
+  color: #222; 
+  font-family: 'Open Sans', sans-serif; 
+  font-size: 15px; font-weight: 400; 
+  line-height: 24px; 
+  margin: 0 0 14px; 
+  text-align:justify;
 }
 
 .wp-style h3{

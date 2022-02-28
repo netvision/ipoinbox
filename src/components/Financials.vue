@@ -25,7 +25,7 @@
     </q-card>
 </template>
 <script setup>
-import { defineProps, ref, onMounted  } from 'vue'
+import { ref } from 'vue'
 import { axios } from '../boot/axios'
 
 const props = defineProps({
