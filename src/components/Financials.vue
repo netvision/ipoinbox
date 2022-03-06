@@ -4,23 +4,27 @@
       <div class="text-h5">Company Financials</div>
     </q-card-section>
     <q-card-section>
-        <q-table wrap-cells
-            title="Profit and Loss Statement"
-            :rows="financials.pl.rows"
-            :columns="financials.pl.columns"
-            row-key="name"
-            hide-bottom
-            />
-      </q-card-section>
-      <q-card-section>
-        <q-table wrap-cells virtual-scroll
-            title="Balance Sheet"
-            :rows="financials.bs.rows"
-            :columns="financials.bs.columns"
-            row-key="name"
-            hide-bottom
-            >
-        </q-table>
+      <div class="row q-col-gutter-sm">
+        <div class="col-12 col-md-6">
+          <q-table wrap-cells
+              title="Profit and Loss Statement"
+              :rows="financials.pl.rows"
+              :columns="financials.pl.columns"
+              row-key="name"
+              hide-bottom
+              />
+          </div>
+          <div class="col-12 col-md-6">
+            <q-table wrap-cells virtual-scroll
+                title="Balance Sheet"
+                :rows="financials.bs.rows"
+                :columns="financials.bs.columns"
+                row-key="name"
+                hide-bottom
+                >
+            </q-table>
+          </div>
+        </div>
       </q-card-section>
     </q-card>
 </template>

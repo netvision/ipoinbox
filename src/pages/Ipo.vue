@@ -286,10 +286,16 @@
     let listings = ipo.value.listings
     nse.value = listings.filter(r => r.exchange == 'NSE')[0]
     bse.value = listings.filter(r => r.exchange == 'BSE')[0]
-    let scrips = await axios.get('https://cmotswebapi.cmots.com/SunnyModi/CompanyMaster').then(r => r.data.data)
-    let niftyEod = await axios.get('https://cmotswebapi.cmots.com/SunnyModi/NseEODPrices-Unadjusted').then(r => r.data.data)
-    curInfo.value = scrips.filter(s => s.NSESymbol === nse.value.scrip_code)[0]
-    eod.value = niftyEod.filter(e => e.co_code === curInfo.value.co_code)[0]
+    
+    let scrips = await axios.get('https://droplet.netserve.in/nse/index').then(r => r.data)
+    let niftyEod = await axios.get('https://droplet.netserve.in/nse/eod').then(r => r.data)
+    
+    // let nifty = await axios.get('https://stockapi.ipoinbox.com/quote?companyName='+nse.value.scrip_code).then(r => r.data)
+    
+    niftyEod = JSON.parse(niftyEod)
+    scrips = JSON.parse(scrips)
+    curInfo.value = scrips.data.filter(s => s.NSESymbol === nse.value.scrip_code)[0]
+    eod.value = niftyEod.data.filter(e => e.co_code === curInfo.value.co_code)[0]
     registrar.value = ipo.value.registrar
     useMeta({
       title: ipo.value.company_name,

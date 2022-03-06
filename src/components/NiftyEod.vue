@@ -114,13 +114,13 @@ const getScrip = (selectedOption, id) => {
     selEod.value = eod.value.filter(scrip => scrip.co_code === selectedOption.co_code)
 }
 onMounted(async() => {
-    const scrips = await axios.get('https://cmotswebapi.cmots.com/SunnyModi/CompanyMaster').then(r => r.data.data)
-    const niftyEod = await axios.get('https://cmotswebapi.cmots.com/SunnyModi/NseEODPrices-Unadjusted').then(r => r.data.data)
-    scripts.value = scrips
-    selected.value = scrips[0]
-    selEod.value = [niftyEod[0]]
-    eod.value = niftyEod
-    dt.value = niftyEod[0].date
+    let scrips = await axios.get('https://droplet.netserve.in/nse/index').then(r => r.data)
+    let niftyEod = await axios.get('https://droplet.netserve.in/nse/eod').then(r => r.data)
+    scripts.value = JSON.parse(scrips).data
+    selected.value = scripts.value[0]
+    eod.value = JSON.parse(niftyEod).data
+    selEod.value = [eod.value[0]]
+    dt.value = eod.value[0].date
 })
 
 </script>
