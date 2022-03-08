@@ -75,9 +75,9 @@ const columns = [
   { name: 'change', label: 'Change (%)', field: 'netPrice', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
 ]
 onMounted(async() => {
-    let ind = await axios.get('http://stockapi.ipoinbox.com/indices').then(r => r.data)
-    let gain = await axios.get('http://stockapi.ipoinbox.com/gainers').then(r => r.data)
-    let loos = await axios.get('http://stockapi.ipoinbox.com/loosers').then(r => r.data)
+    let ind = await axios.get('https://stockapi.ipoinbox.com/indices').then(r => r.data)
+    let gain = await axios.get('https://stockapi.ipoinbox.com/gainers').then(r => r.data)
+    let loos = await axios.get('https://stockapi.ipoinbox.com/loosers').then(r => r.data)
     indices.value = ind.data
     gainers.value = gain.data
     loosers.value = loos.data
