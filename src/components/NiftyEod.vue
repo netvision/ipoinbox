@@ -1,6 +1,5 @@
 <template>
-    <div>
-        <h4 class="text-h4">NSE on {{dateFormat(dt)}}</h4>
+    <div class="q-pa-md bg-orange-1">
         <VueMultiselect class="q-mb-md"
             v-model="selected"
             label="CompanyName"

@@ -10,7 +10,7 @@
       <div class="q-pa-sm flex q-gutter-sm bg-orange-3 rounded-borders">
         <span><a :href="ipo.company_url" target="_blank">{{ipo.company_url}}</a></span> <q-separator color="orange" vertical /> <a :href="nse.url">NSE</a> <q-separator color="orange" vertical /> <a :href="bse.url">BSE</a><q-separator color="orange" vertical /><span> Registrar: <a :href="registrar.url">{{registrar.name}}</a></span>
       </div>
-      <div class="row q-gutter-sm q-pt-md justify-between item-stretch">
+      <div class="row q-col-gutter-sm q-pt-md justify-between item-stretch">
         <div class="rounded-border col-12 col-md-4 bg-orange-2">
           <q-item>
             <q-item-section>
@@ -49,7 +49,7 @@
             </q-item-section>
           </q-item>
         </div>
-        <div class="col-12 col-md-grow bg-orange-2">
+        <div class="col-12 col-md-4 bg-orange-2">
           <q-item>
             <q-item-section>
               <q-item-label overline>Listing Date</q-item-label>
@@ -99,7 +99,7 @@
             </q-item-section>
           </q-item>
         </div>
-        <div class="col-12 col-md-grow bg-orange-2">
+        <div class="col-12 col-md-4 bg-orange-2">
           <q-item>
             <q-item-section>
               <q-item-label overline>EOD on</q-item-label>
@@ -162,8 +162,8 @@
           <div class="tw-text-2xl tw-font-serif tw-text-orange-500 tw-pb-4 tw-border-black">Issue Overview</div>
         </q-card-section>
         <q-card-section>
-          <div class="row q-gutter-sm">
-            <div class="q-pa-md col-12 col-md-grow rounded-border bg-orange-2">
+          <div class="row q-col-gutter-sm">
+            <div class="q-pa-md col-12 col-md-4 rounded-border bg-orange-2">
             
                 <q-item-label overline>Price Band</q-item-label>
                 <q-item-label><span class="text-bold">&#8377;{{ipo.price_band_low}} - &#8377;{{ipo.price_band_high}}</span></q-item-label>
@@ -179,9 +179,12 @@
                 <q-separator spaced color="orange" />
                 <q-item-label overline>Anchor Investors bids on </q-item-label>
                 <q-item-label><span class="text-bold">{{date.formatDate(ipo.anchor_date, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
-                <q-separator spaced color="orange" class="lt-md" />
+                <q-separator spaced color="orange" />
+                <q-item-label overline>Registrar</q-item-label>
+                <q-item-label><span class="text-bold">{{ipo.registrar?.name}}</span></q-item-label>
+                <q-separator spaced color="orange" />
             </div>
-            <div class="q-pa-md col-12 col-md-grow rounded-border bg-orange-2">
+            <div class="q-pa-md col-12 col-md-4 rounded-border bg-orange-2">
               <q-item-label overline>Issue Size</q-item-label>
               <q-item-label><span class="text-bold">&#8377;{{formatNum((ipo.fresh_issue + ipo.offer_for_sale) * ipo.price_band_high)}}</span></q-item-label>
               <q-separator spaced color="orange" />
@@ -194,11 +197,16 @@
               <q-item-label overline>Market Cap at the Time of IPO</q-item-label>
               <q-item-label><span class="text-bold">&#8377; {{formatNum(ipo.no_of_total_shares * ipo.price_band_high)}}</span></q-item-label>
               <q-separator spaced color="orange" />
-              <q-item-label overline>Registrar</q-item-label>
-              <q-item-label><span class="text-bold">{{ipo.registrar?.name}}</span></q-item-label>
-              <q-separator spaced color="orange" />
+              <q-item-label overline>Book Running Lead Managers</q-item-label>
+              <q-item-label>
+                <ol style="list-style-type: decimal; list-style-position: inside;">
+                  <li v-for="brlm in brlms" :key="brlm.id">
+                    <span class="text-bold" >{{brlm.name}}</span>
+                  </li>
+                </ol>
+              </q-item-label>
             </div>
-            <div class="q-pa-md col-12 col-md-grow rounded-border bg-orange-2">
+            <div class="q-pa-md col-12 col-md-4 rounded-border bg-orange-2">
               <q-item-label>Tentative Calander</q-item-label>
               <q-item-label>Finalisation of Basis</q-item-label>
               <q-item-label><span class="text-bold">{{date.formatDate(ipo.t_finalisation_of_basis, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
@@ -229,11 +237,19 @@
     <div v-if="ipo.peers" id="peers">
       <Peers :content="ipo.peers" />
     </div>
-    <pre>{{ipo}}</pre>
+    <div id="subscriptions">
+      <Subscription :subs="ipo.subscriptions" v-if="ipo.subscriptions" />
+    </div>
+    <div id="listings">
+      <Listings :data="ipo.listings" :issue="ipo.issue_price" v-if="ipo.listings" />
+    </div>
+    <div id="review">
+      <Review :data="ipo.review_html" v-if="ipo.review_html" />
+    </div>
   </q-page>
   <q-page-scroller expand position="top" :scroll-offset="350" :offset="[0, 0]">
     <div class="q-pa-sm flex q-gutter-sm bg-orange-3 rounded-borders full-width">
-      <span class="text-h5">{{ipo.company_name}}</span><q-space /><q-btn dense flat label="Info" @click="goTo('info')" /><q-separator color="orange" vertical /><q-btn flat dense label="promoters" @click="goTo('promoters')" /><q-separator color="orange" vertical /><q-btn dense flat label="objects" @click="goTo('objects')" /><q-separator color="orange" vertical /><q-btn dense flat label="Schedule" @click="goTo('issue-detail')" /><q-separator color="orange" vertical /><q-btn dense flat label="Financials" @click="goTo('financials')" /><q-separator color="orange" vertical /><q-btn flat dense label="peers" @click="goTo('peers')" />
+      <span class="text-h5">{{ipo.company_name}}</span><q-space /><q-btn dense flat label="Info" @click="goTo('info')" /><q-separator color="orange" vertical /><q-btn flat dense label="promoters" @click="goTo('promoters')" /><q-separator color="orange" vertical /><q-btn dense flat label="objects" @click="goTo('objects')" /><q-separator color="orange" vertical /><q-btn dense flat label="Schedule" @click="goTo('issue-detail')" /><q-separator color="orange" vertical /><q-btn dense flat label="Financials" @click="goTo('financials')" /><q-separator color="orange" vertical /><q-btn flat dense label="peers" @click="goTo('peers')" /><q-separator color="orange" vertical /><q-btn flat dense label="Subscriptions" @click="goTo('subscriptions')" /><q-separator color="orange" vertical /><q-btn flat dense label="Listing" @click="goTo('listings')" />
     </div>
   </q-page-scroller>
 </template>
@@ -249,6 +265,9 @@
   import Financials from '../components/Financials.vue'
   import Peers from '../components/Peers.vue'
   import Objects from '../components/Objects.vue'
+  import Subscription from '../components/Subscription.vue'
+  import Listings from '../components/Listings.vue'
+  import Review from '../components/Review.vue'
   const { getScrollTarget, setVerticalScrollPosition } = scroll
   const route = useRoute()
   const ipo_id = route.params.id.split('-')[0]
@@ -258,6 +277,7 @@
   const registrar = ref({})
   const eod = ref({})
   const curInfo = ref({})
+  const brlms = ref([])
 
   const goTo = (el) => {
     const ele = document.getElementById(el)
@@ -297,6 +317,7 @@
     curInfo.value = scrips.data.filter(s => s.NSESymbol === nse.value.scrip_code)[0]
     eod.value = niftyEod.data.filter(e => e.co_code === curInfo.value.co_code)[0]
     registrar.value = ipo.value.registrar
+    brlms.value = JSON.parse(ipo.value.brlms_json)
     useMeta({
       title: ipo.value.company_name,
       titleTemplate: title => `${title} - IPO Inbox`,

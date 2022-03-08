@@ -23,6 +23,7 @@
         
       </div>
       <div class="col col-4">
+        <NSELive />
         <NiftyEod />
       </div>
     </div>
@@ -34,7 +35,7 @@ import { ref, onMounted } from 'vue'
 import { axios } from '../boot/axios'
 import { useRouter } from 'vue-router'
 import NiftyEod from 'components/NiftyEod'
-//import Nifty50 from 'components/Nifty50'
+import NSELive from 'components/NSELive'
 
 const ipos = ref([])
 const ipo = ref('')
