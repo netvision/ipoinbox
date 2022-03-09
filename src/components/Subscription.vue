@@ -7,7 +7,30 @@
               :columns="columns"
               row-key="category"
               hide-bottom
-              />
+              :visible-columns="['category', 'day1', 'day2', 'day3', 'total_applications']"
+              >
+              <template v-slot:body-cell-day1="props">
+                <q-td :props="props">
+                  <div class="my-table-details">
+                    {{ subTimes(props.row.quota, props.row.day1) }}
+                  </div>
+                </q-td>
+              </template>
+              <template v-slot:body-cell-day2="props">
+                <q-td :props="props">
+                  <div class="my-table-details">
+                    {{ subTimes(props.row.quota, props.row.day2) }}
+                  </div>
+                </q-td>
+              </template>
+              <template v-slot:body-cell-day3="props">
+                <q-td :props="props">
+                  <div class="my-table-details">
+                    {{ subTimes(props.row.quota, props.row.day3) }}
+                  </div>
+                </q-td>
+              </template>
+        </q-table>
       </q-card-section>
     </q-card>
 </template>
@@ -29,9 +52,12 @@ const columns = [
   { name: 'total_applications', label: 'Total Applications', field: 'total_applications'}
 ]
 const subscriptions = ref(props.subs)
-const getCat = async(id) => {
-    let cat = await axios.get('https://droplet.netserve.in/inv-categories/'+id)
-    return await cat.data.short_name
+
+const subTimes = (quota, subs) => {
+  if(subs > 0 && quota > 0){
+    return (subs/quota).toFixed(2)+' Time'
+  }
+  else return 'NA'
 }
 
 onMounted(async() => {
