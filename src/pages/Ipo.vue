@@ -4,15 +4,15 @@
      <div :style="'background-image: url(\''+ipo.header_img+'\'); height:300px; background-size:cover'">
           <img :src="ipo.company_logo" style="width: 150px; height: 150px; position: absolute; top: 50px; left: 50px">
       </div>
-    <q-card flat class="rounded-border bg-orange-1">
+    <q-card flat class="rounded-border bg-orange-2">
       <q-card-section>
       <div class="text-h3 text-deep-orange-6 text-left q-pb-md">{{ipo.company_name}}</div> 
       <div class="q-pa-sm flex q-gutter-sm bg-orange-3 rounded-borders">
         <span><a :href="ipo.company_url" target="_blank">{{ipo.company_url}}</a></span> <q-separator color="orange" vertical /> <a :href="nse.url">NSE</a> <q-separator color="orange" vertical /> <a :href="bse.url">BSE</a><q-separator color="orange" vertical /><span> Registrar: <a :href="registrar.url">{{registrar.name}}</a></span>
       </div>
       <div class="row q-col-gutter-sm q-pt-md justify-between item-stretch">
-        <div class="rounded-border col-12 col-md-4 bg-orange-2">
-          <q-item>
+        <div class="rounded-border col-12 col-md-4 bg-orange-1 q-ma-sm">
+          <q-item class="tw-divide-x tw-divide-y">
             <q-item-section>
               <q-item-label overline>CIN</q-item-label>
               <q-item-label class="text-bold">{{curInfo.CIN}}</q-item-label>
@@ -49,7 +49,7 @@
             </q-item-section>
           </q-item>
         </div>
-        <div class="col-12 col-md-4 bg-orange-2">
+        <div class="col-12 col-md-4 q-ma-sm bg-orange-1">
           <q-item>
             <q-item-section>
               <q-item-label overline>Listing Date</q-item-label>
@@ -99,7 +99,7 @@
             </q-item-section>
           </q-item>
         </div>
-        <div class="col-12 col-md-4 bg-orange-2">
+        <div class="col-12 col-md-grow q-ma-sm bg-orange-1">
           <q-item>
             <q-item-section>
               <q-item-label overline>EOD on</q-item-label>
@@ -157,14 +157,13 @@
       <Promoters :ipo_id="ipo_id" />
     </div>
     <div id="issue-detail">
-      <q-card flat class="q-mt-md rounded-border bg-orange-1">
+      <q-card flat class="q-mt-md rounded-border bg-orange-2">
         <q-card-section>
           <div class="tw-text-2xl tw-font-serif tw-text-orange-500 tw-pb-4 tw-border-black">Issue Overview</div>
         </q-card-section>
         <q-card-section>
           <div class="row q-col-gutter-sm">
-            <div class="q-pa-md col-12 col-md-4 rounded-border bg-orange-2">
-            
+            <div class="col-12 col-md-4 q-ma-sm bg-orange-1">            
                 <q-item-label overline>Price Band</q-item-label>
                 <q-item-label><span class="text-bold">&#8377;{{ipo.price_band_low}} - &#8377;{{ipo.price_band_high}}</span></q-item-label>
                 <q-separator spaced color="orange" />
@@ -184,7 +183,7 @@
                 <q-item-label><span class="text-bold">{{ipo.registrar?.name}}</span></q-item-label>
                 <q-separator spaced color="orange" />
             </div>
-            <div class="q-pa-md col-12 col-md-4 rounded-border bg-orange-2">
+            <div class="col-12 col-md-4 q-ma-sm bg-orange-1">
               <q-item-label overline>Issue Size</q-item-label>
               <q-item-label><span class="text-bold">&#8377;{{formatNum((ipo.fresh_issue + ipo.offer_for_sale) * ipo.price_band_high)}}</span></q-item-label>
               <q-separator spaced color="orange" />
@@ -206,7 +205,7 @@
                 </ol>
               </q-item-label>
             </div>
-            <div class="q-pa-md col-12 col-md-4 rounded-border bg-orange-2">
+            <div class="col-12 col-md-grow q-ma-sm bg-orange-1">
               <q-item-label>Tentative Calander</q-item-label>
               <q-item-label>Finalisation of Basis</q-item-label>
               <q-item-label><span class="text-bold">{{date.formatDate(ipo.t_finalisation_of_basis, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
@@ -246,6 +245,7 @@
     <div id="review">
       <Review :data="ipo.review_html" v-if="ipo.review_html" />
     </div>
+    
   </q-page>
   <q-page-scroller expand position="top" :scroll-offset="350" :offset="[0, 0]">
     <div class="q-pa-sm flex q-gutter-sm bg-orange-3 rounded-borders full-width">

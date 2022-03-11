@@ -26,6 +26,8 @@
           </div>
         </div>
       </q-card-section>
+      <q-card-section v-if="financials.htmlNotes" v-html="financials.htmlNotes">
+      </q-card-section>
     </q-card>
 </template>
 <script setup>

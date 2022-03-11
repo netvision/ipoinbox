@@ -11,8 +11,7 @@
             hide-bottom
             />
     </q-card-section>
-    <q-card-section v-else>
-      No Peers Listed
+    <q-card-section v-if="peers.htmlNotes" v-html="peers.htmlNotes">
     </q-card-section>
       
     </q-card>

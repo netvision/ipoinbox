@@ -23,7 +23,16 @@
                 dense
                 wrap-cells
                 virtual-scroll
-                />
+                >
+                <template v-slot:body-cell="props">
+                  <q-td :props="props" v-if="props.row.percChange >= 0" class="text-green">
+                    {{props.value}}
+                  </q-td>
+                  <q-td :props="props" v-if="props.row.percChange < 0" class="text-red">
+                    {{props.value}}
+                  </q-td>
+                </template>
+                </q-table>
           </q-tab-panel>
 
           <q-tab-panel name="gainers">
