@@ -1,7 +1,7 @@
 /* eslint-disable vue/valid-template-root */
 <template>
 <q-card flat class="q-mt-md rounded-border bg-orange-1">
-<q-card-section><div class="text-h5">Promoters</div></q-card-section>
+<q-card-section><div class="text-h5" style="font-family: 'Josefin Sans', sans-serif;">Promoters</div></q-card-section>
     <q-card-section horizontal class="q-pa-md q-gutter-md">
         <q-card v-for="promoter in promoters" :key="promoter.id" flat>
             <q-card-section horizontal>

@@ -47,6 +47,7 @@ h3{
 }
 
 .wp-style h3{
+  font-family: 'Josefin Sans', sans-serif;
   font-size: 21px;
   font-weight: 500;
   letter-spacing: 0;

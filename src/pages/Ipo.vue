@@ -2,13 +2,27 @@
 <q-ajax-bar ref="bar" position="top" color="accent" size="10px" />
   <q-page class="q-pa-md">
      <div :style="'background-image: url(\''+ipo.header_img+'\'); height:300px; background-size:cover'">
-          <img :src="ipo.company_logo" style="width: 150px; height: 150px; position: absolute; top: 50px; left: 50px">
+          <img :src="ipo.company_logo" style="width: 150px; height: 150px; position: absolute; top: 100px; left: 50px; background-color:aliceblue; padding:1rem">
       </div>
     <q-card flat class="rounded-border bg-orange-2">
       <q-card-section>
-      <div class="text-h3 text-deep-orange-6 text-left q-pb-md">{{ipo.company_name}}</div> 
+      <div class="text-h3 text-deep-orange-6 text-left q-pb-md" style="font-family: 'Josefin Sans', sans-serif;">{{ipo.company_name}}</div> 
       <div class="q-pa-sm flex q-gutter-sm bg-orange-3 rounded-borders">
-        <span><a :href="ipo.company_url" target="_blank">{{ipo.company_url}}</a></span> <q-separator color="orange" vertical /> <a :href="nse.url">NSE</a> <q-separator color="orange" vertical /> <a :href="bse.url">BSE</a><q-separator color="orange" vertical /><span> Registrar: <a :href="registrar.url">{{registrar.name}}</a></span>
+        <span><a :href="ipo.company_url" target="_blank">{{ipo.company_url}}</a></span> <q-separator color="orange" vertical /> <a :href="nse.url">NSE</a> <q-separator color="orange" vertical /> <a :href="bse.url">BSE</a><q-separator color="orange" vertical /><span> Registrar: <a :href="registrar.url">{{registrar.name}}</a></span> <q-slider
+            class="q-mt-xl"
+            v-model="priceModel"
+            color="green"
+            :inner-min="3"
+            :inner-max="6"
+            markers
+            :marker-labels="arrayMarkerLabel"
+            label-always
+            :label-value="`$ ${priceModel}`"
+            switch-label-side
+            switch-marker-labels-side
+            :min="2"
+            :max="7"
+          />
       </div>
       <div class="row q-col-gutter-sm q-pt-md justify-between item-stretch">
         <div class="rounded-border col-12 col-md-4 bg-orange-1 q-ma-sm">
@@ -100,6 +114,7 @@
           </q-item>
         </div>
         <div class="col-12 col-md-grow q-ma-sm bg-orange-1">
+          
           <q-item>
             <q-item-section>
               <q-item-label overline>EOD on</q-item-label>
@@ -271,6 +286,7 @@
   const { getScrollTarget, setVerticalScrollPosition } = scroll
   const route = useRoute()
   const ipo_id = route.params.id.split('-')[0]
+  const cmp = ref(862)
   const ipo = ref({})
   const bse = ref({})
   const nse = ref({})
@@ -278,6 +294,15 @@
   const eod = ref({})
   const curInfo = ref({})
   const brlms = ref([])
+
+  const priceModel = ref(4)
+  
+  const arrayMarkerLabel = [
+        { value: 3, label: '$3' },
+        { value: 4, label: '$4' },
+        { value: 5, label: '$5' },
+        { value: 6, label: '$6' }
+      ]
 
   const goTo = (el) => {
     const ele = document.getElementById(el)
