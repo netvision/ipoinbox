@@ -14,7 +14,37 @@
     </div>
     <div class="row">
         <div class="col" id="bse" v-html="html"></div>
-        <div class="col" id="bse" v-html="nseHtml"></div>
+        <div class="col" id="nse">
+        <table>
+        <tr>
+        <th colspan="8">Last Update : <br /> {{nseData?.data[0].dat}}</th>
+        </tr>
+        <tr>
+        <th colspan="5">Quantity</th><th>Cumulative Qty</th>
+        </tr>
+        <tr>
+        <th>price interval</th>
+        <th>No. of Bids</th>
+        <th>Confirmed</th>
+        <th>yet to be Confmd</th>
+        <th>Total</th>
+        <th>confirmed</th>
+        <th>yet to be Confmd</th>
+        <th>Total</th>
+        </tr>
+        <tr v-for="(d, i) in nseData?.data" :key="i">
+        <td>{{d.pri}}</td>
+        <td>{{d.bids}}</td>
+        <td>{{d.conQty}}</td>
+        <td>{{d.uCQty}}</td>
+        <td>{{d.totQty}}</td>
+        <td>{{d.cumConQty}}</td>
+        <td>{{d.cumUCQty}}</td>
+        <td>{{d.cumTQty}}</td>
+    
+        </tr>
+        </table>
+        </div>
     </div>
 </q-page>
 </template>
@@ -25,14 +55,18 @@ import { axios } from '../boot/axios'
 const bseUrl = ref()
 const nseUrl = ref()
 const html = ref()
-const nseHtml = ref()
+const nseData = ref()
 
 const getData = async() => {
     let parser = new DOMParser()
     let bseOfs = await axios.get(bseUrl.value)
-    let nseOfs = await axios.get(nseUrl.value).then(r => r.data)
+    nseData.value = await axios.get(nseUrl.value).then(r => r.data)
     html.value = parser.parseFromString(bseOfs.data, 'text/html').getElementById('divID').innerHTML
-    
-    console.log(nseOfs)
 }
+
+onMounted(() => {
+    bseUrl.value = 'https://www.bseindia.com/markets/PublicIssues/BSEBidDetails_ofs_T.aspx?flag=R&Scripcode=500312'
+    nseUrl.value = 'https://www1.nseindia.com/live_market/content/live_watch/offer_sale/ofs_details_retail.json'
+    setInterval(getData, 5000)
+})
 </script>
