@@ -57,7 +57,7 @@ const goTo = (ip) => {
   if(ip){
     ipo.value = ip
   }
-    //router.push('/ipo/'+ipo.value.ipo_id+'-'+encodeURIComponent(ipo.value.company_name))  
+    router.push('/ipo/'+ipo.value.ipo_id+'-'+encodeURIComponent(ipo.value.company_name))  
 }
 onMounted(async() => {
   ipos.value = await axios.get('https://droplet.netserve.in/ipos?sort=-open_date').then(r => r.data)
