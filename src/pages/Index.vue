@@ -11,7 +11,7 @@
         <q-select 
           filled 
           v-model="ipo" 
-          :options="ipos" 
+          :options="iposOpt" 
           option-value="ipo_id" 
           option-label="company_name" 
           label="Search IPOs Archives"
@@ -39,6 +39,7 @@ import NSELive from 'components/NSELive'
 
 const ipos = ref([])
 const ipo = ref('')
+const iposOpt = ref([])
 const router = useRouter()
 const latestIpos = ref([])
 
@@ -48,25 +49,24 @@ const getLatestIpos = () => {
 const filterFn = (val, update, abort) => {
   update(() => {
           const needle = val.toLowerCase()
-          ipos.value = ipos.value.filter(v => v.company_name.toLowerCase().indexOf(needle) > -1)
+          iposOpt.value = ipos.value.filter(v => v.company_name.toLowerCase().indexOf(needle) > -1)
         })
 }
 
 const goTo = (ip) => {
   if(ip){
-    console.log(encodeURI(ip.company_name))
-    router.push('/ipo/'+ip.ipo_id+'-'+encodeURI(ip.company_name))
+    ipo.value = ip
   }
-  else{ 
-    router.push('/ipo/'+ipo.value.ipo_id+'-'+encodeURI(ipo.value.company_name))
-  }
-  
+    //router.push('/ipo/'+ipo.value.ipo_id+'-'+encodeURIComponent(ipo.value.company_name))  
 }
 onMounted(async() => {
-  ipos.value = await axios.get('https://droplet.netserve.in/ipos').then(r => r.data)
+  ipos.value = await axios.get('https://droplet.netserve.in/ipos?sort=-open_date').then(r => r.data)
+  iposOpt.value = ipos.value
+  /*
   ipos.value.sort(function(a,b){
     return new Date(b.open_date) - new Date(a.open_date)
   })
+  */
   getLatestIpos()
 })
 /*

@@ -3,7 +3,7 @@
       <q-card-section>
       <div class="text-h5 q-mb-md">Listing Day Data</div>
       <div class="row q-col-gutter-sm">
-        <div class="col-12 col-sm-6 bg-orange-2">
+        <div class="col-12 col-sm-6 bg-orange-2" v-if="nse">
           <div class="text-h6">NSE</div>
             <q-item class="bg-white q-pa-sm">
             <q-separator vertical color="orange" />
@@ -75,7 +75,7 @@
           </q-item>
         </div>
         
-        <div class="col-12 col-sm-6 bg-orange-2">
+        <div class="col-12 col-sm-6 bg-orange-2" v-if="bse">
           <div class="text-h6">BSE</div>
             <q-item class="bg-white q-pa-sm">
             <q-separator vertical color="orange" />

@@ -32,12 +32,12 @@
 import { ref, onMounted  } from 'vue'
 import { axios } from '../boot/axios'
 const props = defineProps({
-    ipo_id: String
+    data: Object
   })
 console.log(props.ipo_id)
-const promoters = ref([])
+const promoters = ref(props.data)
 onMounted(async() => {
-    promoters.value = await axios.get('https://droplet.netserve.in/promoters?ipo_id='+props.ipo_id).then(r => r.data)
+    //promoters.value = await axios.get('https://droplet.netserve.in/promoters?ipo_id='+props.ipo_id).then(r => r.data)
     console.log(promoters.value)
 })
 </script>
