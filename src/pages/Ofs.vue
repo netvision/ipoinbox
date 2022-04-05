@@ -46,6 +46,7 @@
         </table>
         </div>
     </div>
+    <pre>{{html}}</pre>
 </q-page>
 </template>
 <script setup>
@@ -61,12 +62,26 @@ const getData = async() => {
     let parser = new DOMParser()
     let bseOfs = await axios.get(bseUrl.value)
     nseData.value = await axios.get(nseUrl.value).then(r => r.data)
-    html.value = parser.parseFromString(bseOfs.data, 'text/html').getElementById('divID').innerHTML
+    let rows = parser.parseFromString(bseOfs.data, 'text/html').getElementById('divID').querySelectorAll('td tr')
+    let trs = []
+    rows.forEach((row, i) => {
+        let cols = row.querySelectorAll('td')
+        let tr = Object
+        let td = Array
+        cols.forEach((col, i) => {
+            td[i] = col.textContent
+        })
+        tr.td = td
+        trs.push(tr)
+        
+    })
+    console.log(trs[1].td[1])
 }
 
 onMounted(() => {
     bseUrl.value = 'https://www.bseindia.com/markets/PublicIssues/BSEBidDetails_ofs_T.aspx?flag=R&Scripcode=500312'
     nseUrl.value = 'https://www1.nseindia.com/live_market/content/live_watch/offer_sale/ofs_details_retail.json'
-    setInterval(getData, 5000)
+    //setInterval(getData, 5000)
+    getData()
 })
 </script>
