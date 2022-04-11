@@ -90,6 +90,5 @@ onMounted(async() => {
     indices.value = ind.data
     gainers.value = gain.data
     loosers.value = loos.data
-    console.log(loosers.value)
 })
 </script>
