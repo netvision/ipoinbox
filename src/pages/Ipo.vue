@@ -88,7 +88,7 @@
 
   const init = async(ipo_id) => {
     ipo.value = await axios.get('https://droplet.netserve.in/ipos/'+ipo_id+'?expand=registrar,promoters,listings,subscriptions,sector').then(r => r.data)
-    
+    console.log(ipo.value)
     let listings = ipo.value.listings
     if(listings.length > 0){
         let nseData = listings.filter(r => r.exchange === 'NSE')[0]
@@ -105,6 +105,7 @@
         if(nse.value && nse.value.scrip_code && nse.value.listing_date){
             nse.value.issue_price = (ipo.value.issue_price) ? ipo.value.issue_price : null
             nse.value.lot_size = (ipo.value.lot_size) ? ipo.value.lot_size : null
+            nse.value.totalShares = (ipo.value.no_of_total_shares) ? ipo.value.no_of_total_shares : 0
             let info = scrips.value.data.filter(s => s.NSESymbol === nse.value.scrip_code.trim())[0]
             if (info) {
               nse.value.info = info

@@ -1,6 +1,5 @@
 <template>
-    <q-card flat class="q-pa-sm rounded-border bg-orange-2">
-      <q-card-section>
+    
         <div class="row q-col-gutter-sm">
             <div class="col-12 col-md-4 bg-orange-1">
                 <div v-if="nse && nse.liveQuote" id="nse-live" class="bg-orange-3">
@@ -56,7 +55,7 @@
                       <q-item-label class="text-subtitle1">Day Volume</q-item-label>
                     </q-item-section>
                     <q-item-section>
-                      <q-item-label class="text-bold text-right">{{nse?.liveQuote?.quantityTraded}}</q-item-label>
+                      <q-item-label class="text-bold text-right">{{nse?.liveQuote?.quantityTraded}} Eq. Shares</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-separator />
@@ -65,7 +64,7 @@
                       <q-item-label class="text-subtitle1">Total Turnover</q-item-label>
                     </q-item-section>
                     <q-item-section>
-                      <q-item-label class="text-bold text-right">{{nse?.liveQuote?.totalTradedValue}} </q-item-label>
+                      <q-item-label class="text-bold text-right">Rs. {{nse?.liveQuote?.totalTradedValue}} L</q-item-label>
                     </q-item-section>
                   </q-item>
 
@@ -98,7 +97,7 @@
                   <q-item>
                     <q-item-section>
                       <q-item-label class="text-subtitle1 q-pb-sm q-pt-md">Listing Day Low and High</q-item-label>
-                      <vue-slider :min="Math.round(nse?.low)" :max="Math.round(nse?.high)" v-model="listingClose" width="100%" disabled />
+                      <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse?.low)" :max="Math.round(nse?.high)" v-model="listingClose" width="100%" disabled />
                     </q-item-section>
                   </q-item>
                   <q-item dense>
@@ -114,7 +113,7 @@
                   <q-item v-if="nse.liveQuote">
                     <q-item-section>
                       <q-item-label class="text-subtitle1 q-pb-sm">52 Week Low and High</q-item-label>
-                      <vue-slider :min="Math.round(nse.liveQuote.low52)" :max="Math.round(nse.liveQuote.high52)" v-model="close" width="100%" disabled />
+                      <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse.liveQuote.low52)" :max="Math.round(nse.liveQuote.high52)" v-model="close" width="100%" disabled />
                     </q-item-section>
                   </q-item>
                   <q-item dense v-if="nse.liveQuote">
@@ -129,7 +128,7 @@
                   <q-item v-if="nse && nse.eod">
                     <q-item-section>
                       <q-item-label class="text-subtitle1 q-pb-sm">Lifetime Low and High</q-item-label>
-                      <vue-slider :min="Math.round(nse.eod.LifeTimeLow)" :max="Math.round(nse.eod.LifeTimeHigh)" v-model="close" width="100%" disabled />
+                      <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse.eod.LifeTimeLow)" :max="Math.round(nse.eod.LifeTimeHigh)" v-model="close" width="100%" disabled />
                     </q-item-section>
                   </q-item>
                   <q-item dense v-if="nse.eod">
@@ -149,7 +148,7 @@
             <div class="col-12 col-md-4 bg-orange-1">
             <q-item>
               <q-item-section>
-              <q-item-label>Return Calculations</q-item-label>
+              <q-item-label class="text-h6 text-deep-orange-6">Return Calculations</q-item-label>
               </q-item-section>
             </q-item>
             <q-item>
@@ -176,10 +175,38 @@
                 <q-item-label class="text-bold text-right">Rs. {{allotReturn}}</q-item-label>
               </q-item-section>
             </q-item>
+            <q-separator />
+            <q-item>
+              <q-item-section>
+                <q-item-label class="text-h6 text-deep-orange-6">Market Cap ({{nse?.info?.mcaptype}})</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label overline class="text-left">At the time of IPO</q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-bold text-right">{{mcapAtIpo}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label overline class="text-left">At the time of Listing</q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-bold text-right">{{mcapAtListing}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label overline class="text-left">Current Market Cap</q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-bold text-right">{{nse?.info?.MCAP}} Cr</q-item-label>
+              </q-item-section>
+            </q-item>
             </div>
         </div>
-      </q-card-section>
-    </q-card>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -195,11 +222,28 @@ const bse = ref(props.bse)
 const nse = ref(props.nse)
 const close = ref()
 const listingClose = ref()
+const mcapAtIpo = ref()
+const mcapAtListing = ref()
 close.value = (props.nse && props.nse.eod && props.nse.eod.Close) ? Math.round(props.nse.eod.Close) : 0
 listingClose.value = (props.nse && props.nse.close) ? Math.round(props.nse.close) : 0
 const cagr = ref()
 const preturn = ref()
 const allotReturn = ref()
+
+const style = {
+  background: "orange"
+}
+
+const formatNum = (num) => {
+    if(num > 999 && num < 1000000){
+        return (num/1000).toFixed(1) + 'K'; // convert to K for number from > 1000 < 1 million 
+    }else if(num > 10000000){
+        return (num/10000000).toFixed(1) + ' Cr'; // convert to M for number from > 1 million 
+    }else if(num < 900){
+        return num; // if value < 1000, nothing to do
+    }
+  }
+
 onMounted(async() => {
   if(bse.value && bse.value.scrip_code){
     let liveQuote = await axios.get('https://stockapi.ipoinbox.com/bse?companyCode='+bse.value.scrip_code.trim()).then(r => r.data)
@@ -213,13 +257,15 @@ onMounted(async() => {
       }
   }
 
-  let duration = date.getDateDiff(new Date(), new Date(nse.value.listing_date), 'days')/365
+  let duration = date.getDateDiff(new Date(), new Date(nse.value.listing_date), 'days') / 365
   let gain = nse.value.eod.Close / nse.value.issue_price
-  cagr.value = (Math.pow(gain, 1/duration) - 1).toFixed(2)
+  cagr.value = ((Math.pow(gain, 1/duration) - 1)*100).toFixed(2)
   let ret = (nse.value.eod.Close - nse.value.issue_price) * 100 / nse.value.issue_price
   preturn.value = ret.toFixed(2)
-
   allotReturn.value = ((nse.value.eod.Close - nse.value.issue_price) * nse.value.lot_size).toFixed(2)
+
+  mcapAtIpo.value = formatNum(nse.value.totalShares * nse.value.issue_price)
+  mcapAtListing.value = formatNum(nse.value.totalShares * nse.value.listing_price)
 })
 
 </script>
