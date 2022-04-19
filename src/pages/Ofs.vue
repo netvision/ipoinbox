@@ -17,10 +17,10 @@
         <div class="col" id="bse">
             <table class="tw-min-w-ful ofs">
             <tr>
-            <th>Price Interval</th><th>BSE Bids</th><th>BSE Confirmed</th><th>NSE Bids</th><th>NSE Confirmed</th>
+            <th>Price Interval</th><th>BSE Bids</th><th>BSE Confirmed</th><th>NSE Bids</th><th>NSE Confirmed</th><th>Accumulated</th>
             </tr>
             <tr v-for="(item, k) in html" :key="k">
-                <td>{{item.price}}</td><td>{{item.nsebids}}</td><td>{{item.nseConfirmed}}</td><td>{{item.bsebids}}</td><td>{{item.bseConfirmed}}</td>
+                <td>{{item.price}}</td><td>{{item.nsebids}}</td><td>{{item.nseConfirmed}}</td><td>{{item.bsebids}}</td><td>{{item.bseConfirmed}}</td><td>{{item.acc}}</td>
             </tr>
             </table>
         </div>
@@ -70,7 +70,7 @@ const getData = async() => {
         }
     })
 
-    html.value = processData(trs, nseData.value)
+    html.value = processData(trs, nseData.value).reverse()
     
     
 }
@@ -78,25 +78,29 @@ const getData = async() => {
 const processData = (bse, nse) => {
     let bsePrices = bse.map(x => +x.price)
     let nsePrices = nse.data.map(y => +y.pri)
-    let prices = [...nsePrices, ...bsePrices].sort(function(a, b){return a - b});
+    let prices = [...nsePrices, ...bsePrices].sort(function(a, b){return b - a});
     let uniqPri = [...new Set(prices)]
     
     let final = []
+    let acc = 0
     uniqPri.forEach(pri => {
-        /*
+       if(!isNaN(pri)){
+           let bData = bse.find(x => x.price == pri)
+       let nData = nse.data.find(y => y.pri == pri)
+       let nseConfirmed = (nData?.conQty.replace(/,/g,"")) ? nData?.conQty.replace(/,/g,"") : 0
+        let bseConfirmed = (bData?.confirmed.replace(/,/g,"")) ? bData?.confirmed.replace(/,/g,"") : 0
+        acc = acc + +nseConfirmed + +bseConfirmed
+       final.push({price: pri, nsebids: nData?.bids, nseConfirmed: nseConfirmed, bsebids: bData?.bids, bseConfirmed: bseConfirmed, acc: acc})
+
+       } /*
         let bData = bse.filter(x => x.price == pri)[0]
         let nData = nse.filter(y => y.pri == pri)[0]
         final.push({bse: bData, nse: nData})
         */
-       let bData = bse.find(x => x.price == pri)
-       let nData = nse.data.find(y => y.pri == pri)
-       final.push({price: pri, nsebids: nData?.bids, nseConfirmed: nData?.conQty, bsebids: bData?.bids, bseConfirmed: bData?.confirmed})
+       
     })
-    
     return final
-    
 }
-
 onMounted(() => {
    /*
     bseUrl.value = 'https://www.bseindia.com/markets/PublicIssues/BSEBidDetails_ofs.aspx?flag=NR&Scripcode=506222'
@@ -106,8 +110,7 @@ onMounted(() => {
     */
     ofstype.value = 'Non-retail'
     bsecode.value = '506222'
-    setInterval(getData(), 10000)
-    
+    getData()
 })
 </script>
 <style>
