@@ -20,7 +20,7 @@
             <th>Price Interval</th><th>BSE Bids</th><th>BSE Confirmed</th><th>NSE Bids</th><th>NSE Confirmed</th><th>Accumulated</th>
             </tr>
             <tr v-for="(item, k) in html" :key="k">
-                <td>{{item.price}}</td><td>{{item.nsebids}}</td><td>{{item.nseConfirmed}}</td><td>{{item.bsebids}}</td><td>{{item.bseConfirmed}}</td><td>{{item.acc}}</td>
+                <td>{{item.price}}</td><td>{{item.bsebids}}</td><td>{{item.bseConfirmed}}</td><td>{{item.nsebids}}</td><td>{{item.nseConfirmed}}</td><td>{{item.acc}}</td>
             </tr>
             </table>
         </div>
@@ -48,15 +48,15 @@ const getData = async() => {
         bseUrl.value = 'https://www.bseindia.com/markets/PublicIssues/BSEBidDetails_ofs.aspx?flag=NR&Scripcode='+bsecode.value
         nseUrl.value = 'https://stockapi.ipoinbox.com/nseofs'
     }
+    nseData.value = await axios.get(nseUrl.value).then(r => r.data)
     
     let parser = new DOMParser()
     let bseOfs = await axios.get(bseUrl.value)
-    nseData.value = await axios.get(nseUrl.value).then(r => r.data)
     let rows = parser.parseFromString(bseOfs.data, 'text/html').getElementById('divID').querySelectorAll('td tr')
-    let trs = []
-    rows.forEach((row, i) => {
+    if(rows && rows.length > 0 && nseData.value.data){
+        let trs = []
+        rows.forEach((row, i) => {
         if(i > 1){
-            
             let cols = rows[i].querySelectorAll('td')
             let tr = []
             let td = {}
@@ -68,11 +68,11 @@ const getData = async() => {
             
             trs.push(td)
         }
-    })
-
-    html.value = processData(trs, nseData.value).reverse()
-    
-    
+        })
+        html.value = processData(trs, nseData.value).reverse()
+    }
+    else html.value = {}
+    console.log('ok')
 }
 
 const processData = (bse, nse) => {
@@ -110,7 +110,7 @@ onMounted(() => {
     */
     ofstype.value = 'Non-retail'
     bsecode.value = '506222'
-    getData()
+    setInterval(getData, 10000)
 })
 </script>
 <style>
