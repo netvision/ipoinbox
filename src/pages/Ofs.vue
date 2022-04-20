@@ -8,7 +8,9 @@
         <div class="col">
         <q-input v-model="bsecode" label="BSE Scrip Code" type="text" />
         </div>
-        
+        <div class="col">
+        <q-select v-model="refresh" :options="[2, 3, 4, 5, 6, 7, 8, 9, 10]" label="Refresh After Seconds" />
+        </div>
         <div class="col">
             <q-btn label="Get Data" @click="getData" />
         </div>
@@ -37,6 +39,7 @@ const nseUrl = ref()
 const nseRetailUrl = 'https://stockapi.ipoinbox.com/nseofsretail'
 const html = ref()
 const nseData = ref()
+const refresh = ref()
 
 const getData = async() => {
     console.log(bsecode.value)
@@ -108,9 +111,10 @@ onMounted(() => {
     nseUrl.value = 'https://stockapi.ipoinbox.com/nseofs'
     //setInterval(getData, 5000)
     */
-    ofstype.value = 'Non-retail'
+    ofstype.value = 'Retail'
     bsecode.value = '506222'
-    setInterval(getData, 10000)
+    refresh.value = 5
+    setInterval(getData, refresh.value * 1000)
 })
 </script>
 <style>
