@@ -79,8 +79,8 @@ const getData = async() => {
 }
 
 const processData = (bse, nse) => {
-    let bsePrices = bse.map(x => +x.price)
-    let nsePrices = nse.data.map(y => +y.pri)
+    let bsePrices = bse.map(x => x.price)
+    let nsePrices = nse.data.map(y => y.pri)
     let prices = [...nsePrices, ...bsePrices].sort(function(a, b){return b - a});
     let uniqPri = [...new Set(prices)]
     
