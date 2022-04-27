@@ -1,212 +1,211 @@
 <template>
-    
-        <div class="row q-col-gutter-sm">
-            <div class="col-12 col-md-4 bg-orange-1">
-                <div v-if="nse && nse.liveQuote" id="nse-live" class="bg-orange-3">
-                    <h3 :class="(nse.liveQuote.change > 0) ? 'text-positive text-h3': 'text-negative text-h3'">{{nse?.liveQuote?.lastPrice}}</h3>
-                    <h5 :class="(nse.liveQuote.change > 0) ? 'text-positive': 'text-negative'">{{nse?.liveQuote?.change}} <span>({{nse?.liveQuote?.pChange}}%) <q-icon v-if="nse.liveQuote.change > 0" name="arrow_upward" color="positive" /> <q-icon v-if="nse.liveQuote.change < 0" name="arrow_downward" color="negative" /></span></h5>
-                    <p class="text-subtitle2">{{date.formatDate(nse?.liveQuote?.lastUpdate, 'DD-MMMYYYY | HH:mm:ss')}}</p>
-                </div>
-                <div>
-                   <q-item>
-                    <q-item-section>
-                      <q-item-label overline>BSE Scrip Code</q-item-label>
-                      <q-item-label class="text-bold">{{bse?.scrip_code}}</q-item-label>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label overline class="text-right">NSE Symbol</q-item-label>
-                      <q-item-label class="text-bold text-right">{{nse?.scrip_code}}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label class="text-bold">ISIN </q-item-label>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label class="text-bold text-right">{{nse?.info?.isin}}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label overline>Open</q-item-label>
-                      <q-item-label class="text-bold">{{nse?.liveQuote?.open}}</q-item-label>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label overline class="text-right">Close</q-item-label>
-                      <q-item-label class="text-bold text-right">{{(nse.liveQuote && nse.liveQuote.closePrice > 0) ? nse.liveQuote.closePrice : 'Live'}}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label overline>Day High</q-item-label>
-                      <q-item-label class="text-bold">{{nse?.liveQuote?.dayHigh}}</q-item-label>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label overline class="text-right">Day Low</q-item-label>
-                      <q-item-label class="text-bold text-right">{{nse?.liveQuote?.dayLow}}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label class="text-subtitle1">Day Volume</q-item-label>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label class="text-bold text-right">{{nse?.liveQuote?.quantityTraded}} Eq. Shares</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label class="text-subtitle1">Total Turnover</q-item-label>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label class="text-bold text-right">Rs. {{nse?.liveQuote?.totalTradedValue}} L</q-item-label>
-                    </q-item-section>
-                  </q-item>
-
-                </div>
-            </div>
-            <div class="col-12 col-md-4 bg-orange-1">
-                <div>
-                  <q-item>
-                     <q-item-section>
-                      <q-item-label overline class="text">Listing Date</q-item-label>
-                      <q-item-label class="text-bold">{{date.formatDate(nse?.listing_date, 'DD-MMM-YYYY')}}</q-item-label>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label overline class="text-right">Issue Price</q-item-label>
-                      <q-item-label class="text-bold text-right">{{nse?.issue_price}}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                  <q-item>
-                     <q-item-section>
-                      <q-item-label overline class="text">Listing Price NSE</q-item-label>
-                      <q-item-label class="text-bold">{{nse?.listing_price}}</q-item-label>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label overline class="text-right">Listing Price BSE</q-item-label>
-                      <q-item-label class="text-bold text-right">{{bse?.listing_price}}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label class="text-subtitle1 q-pb-sm q-pt-md">Listing Day Low and High</q-item-label>
-                      <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse?.low)" :max="Math.round(nse?.high)" v-model="listingClose" width="100%" disabled />
-                    </q-item-section>
-                  </q-item>
-                  <q-item dense>
-                     <q-item-section>
-                      <q-item-label class="text-bold">{{nse?.low}}</q-item-label>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label class="text-bold text-right">{{nse?.high}}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  
-                  <q-separator />
-                  <q-item v-if="nse.liveQuote">
-                    <q-item-section>
-                      <q-item-label class="text-subtitle1 q-pb-sm">52 Week Low and High</q-item-label>
-                      <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse.liveQuote.low52)" :max="Math.round(nse.liveQuote.high52)" v-model="close" width="100%" disabled />
-                    </q-item-section>
-                  </q-item>
-                  <q-item dense v-if="nse.liveQuote">
-                     <q-item-section>
-                      <q-item-label class="text-bold">{{nse?.liveQuote?.low52}}</q-item-label>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label class="text-bold text-right">{{nse?.liveQuote?.high52}}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                  <q-item v-if="nse && nse.eod">
-                    <q-item-section>
-                      <q-item-label class="text-subtitle1 q-pb-sm">Lifetime Low and High</q-item-label>
-                      <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse.eod.LifeTimeLow)" :max="Math.round(nse.eod.LifeTimeHigh)" v-model="close" width="100%" disabled />
-                    </q-item-section>
-                  </q-item>
-                  <q-item dense v-if="nse.eod">
-                     <q-item-section>
-                      <q-item-label class="text-bold">{{nse?.eod?.LifeTimeLow}}</q-item-label>
-                      <q-item-label overline>{{date.formatDate(nse?.eod?.lowdate, 'DD-MMM-YYYY')}}</q-item-label>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label class="text-bold text-right">{{nse?.eod?.LifeTimeHigh}}</q-item-label>
-                      <q-item-label overline class="text-right">{{date.formatDate(nse?.eod?.highdate, 'DD-MMM-YYYY')}}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-separator />
-                  
-                </div>
-            </div>
-            <div class="col-12 col-md-4 bg-orange-1">
-            <q-item>
+  <div class="row q-col-gutter-sm">
+      <div class="col-12 col-md-4 bg-orange-1">
+          <div v-if="nse && nse.liveQuote" id="nse-live" class="bg-orange-3">
+              <h3 :class="(nse.liveQuote.change > 0) ? 'text-positive text-h3': 'text-negative text-h3'">{{nse?.liveQuote?.lastPrice}}</h3>
+              <h5 :class="(nse.liveQuote.change > 0) ? 'text-positive': 'text-negative'">{{nse?.liveQuote?.change}} <span>({{nse?.liveQuote?.pChange}}%) <q-icon v-if="nse.liveQuote.change > 0" name="arrow_upward" color="positive" /> <q-icon v-if="nse.liveQuote.change < 0" name="arrow_downward" color="negative" /></span></h5>
+              <p class="text-subtitle2">{{date.formatDate(nse?.liveQuote?.lastUpdate, 'DD-MMMYYYY | HH:mm:ss')}}</p>
+          </div>
+          <div>
+              <q-item>
               <q-item-section>
-              <q-item-label class="text-h6 text-deep-orange-6">Return Calculations</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item>
-              <q-item-section>
-                <q-item-label overline class="text-left">CAGR</q-item-label>
+                <q-item-label overline>BSE Scrip Code</q-item-label>
+                <q-item-label class="text-bold">{{bse?.scrip_code}}</q-item-label>
               </q-item-section>
               <q-item-section>
-                <q-item-label class="text-bold text-right">{{cagr}}%</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item>
-              <q-item-section>
-                <q-item-label overline class="text-left">Return in %</q-item-label>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label class="text-bold text-right">{{preturn}}%</q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item>
-              <q-item-section>
-                <q-item-label overline class="text-left">Return per allotment</q-item-label>
-              </q-item-section>
-              <q-item-section>
-                <q-item-label class="text-bold text-right">Rs. {{allotReturn}}</q-item-label>
+                <q-item-label overline class="text-right">NSE Symbol</q-item-label>
+                <q-item-label class="text-bold text-right">{{nse?.scrip_code}}</q-item-label>
               </q-item-section>
             </q-item>
             <q-separator />
             <q-item>
               <q-item-section>
-                <q-item-label class="text-h6 text-deep-orange-6">Market Cap ({{nse?.info?.mcaptype}})</q-item-label>
+                <q-item-label class="text-bold">ISIN </q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-bold text-right">{{nse?.info?.isin}}</q-item-label>
               </q-item-section>
             </q-item>
+            <q-separator />
             <q-item>
               <q-item-section>
-                <q-item-label overline class="text-left">At the time of IPO</q-item-label>
+                <q-item-label overline>Open</q-item-label>
+                <q-item-label class="text-bold">{{nse?.liveQuote?.open}}</q-item-label>
               </q-item-section>
               <q-item-section>
-                <q-item-label class="text-bold text-right">{{mcapAtIpo}}</q-item-label>
+                <q-item-label overline class="text-right">Close</q-item-label>
+                <q-item-label class="text-bold text-right">{{(nse.liveQuote && nse.liveQuote.closePrice > 0) ? nse.liveQuote.closePrice : 'Live'}}</q-item-label>
               </q-item-section>
             </q-item>
+            <q-separator />
             <q-item>
               <q-item-section>
-                <q-item-label overline class="text-left">At the time of Listing</q-item-label>
+                <q-item-label overline>Day High</q-item-label>
+                <q-item-label class="text-bold">{{nse?.liveQuote?.dayHigh}}</q-item-label>
               </q-item-section>
               <q-item-section>
-                <q-item-label class="text-bold text-right">{{mcapAtListing}}</q-item-label>
+                <q-item-label overline class="text-right">Day Low</q-item-label>
+                <q-item-label class="text-bold text-right">{{nse?.liveQuote?.dayLow}}</q-item-label>
               </q-item-section>
             </q-item>
+            <q-separator />
             <q-item>
               <q-item-section>
-                <q-item-label overline class="text-left">Current Market Cap</q-item-label>
+                <q-item-label class="text-subtitle1">Day Volume</q-item-label>
               </q-item-section>
               <q-item-section>
-                <q-item-label class="text-bold text-right">{{nse?.info?.MCAP}} Cr</q-item-label>
+                <q-item-label class="text-bold text-right">{{nse?.liveQuote?.quantityTraded}} Eq. Shares</q-item-label>
               </q-item-section>
             </q-item>
-            </div>
-        </div>
+            <q-separator />
+            <q-item>
+              <q-item-section>
+                <q-item-label class="text-subtitle1">Total Turnover</q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-bold text-right">Rs. {{nse?.liveQuote?.totalTradedValue}} L</q-item-label>
+              </q-item-section>
+            </q-item>
+
+          </div>
+      </div>
+      <div class="col-12 col-md-4 bg-orange-1">
+          <div>
+            <q-item>
+                <q-item-section>
+                <q-item-label overline class="text">Listing Date</q-item-label>
+                <q-item-label class="text-bold">{{date.formatDate(nse?.listing_date, 'DD-MMM-YYYY')}}</q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label overline class="text-right">Issue Price</q-item-label>
+                <q-item-label class="text-bold text-right">{{nse?.issue_price}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item>
+                <q-item-section>
+                <q-item-label overline class="text">Listing Price NSE</q-item-label>
+                <q-item-label class="text-bold">{{nse?.listing_price}}</q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label overline class="text-right">Listing Price BSE</q-item-label>
+                <q-item-label class="text-bold text-right">{{bse?.listing_price}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item>
+              <q-item-section>
+                <q-item-label class="text-subtitle1 q-pb-sm q-pt-md">Listing Day Low and High</q-item-label>
+                <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse?.low)" :max="Math.round(nse?.high)" v-model="listingClose" width="100%" disabled />
+              </q-item-section>
+            </q-item>
+            <q-item dense>
+                <q-item-section>
+                <q-item-label class="text-bold">{{nse?.low}}</q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-bold text-right">{{nse?.high}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            
+            <q-separator />
+            <q-item v-if="nse.liveQuote">
+              <q-item-section>
+                <q-item-label class="text-subtitle1 q-pb-sm">52 Week Low and High</q-item-label>
+                <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse.liveQuote.low52.replace(/,/g, ''))" :max="Math.round(nse.liveQuote.high52.replace(/,/g, ''))" v-model="close" width="100%" disabled />
+              </q-item-section>
+            </q-item>
+            <q-item dense v-if="nse.liveQuote">
+                <q-item-section>
+                <q-item-label class="text-bold">{{nse?.liveQuote?.low52}}</q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-bold text-right">{{nse?.liveQuote?.high52}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item v-if="nse && nse.eod">
+              <q-item-section>
+                <q-item-label class="text-subtitle1 q-pb-sm">Lifetime Low and High</q-item-label>
+                <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse.eod.LifeTimeLow)" :max="Math.round(nse.eod.LifeTimeHigh)" v-model="close" width="100%" disabled />
+              </q-item-section>
+            </q-item>
+            <q-item dense v-if="nse.eod">
+                <q-item-section>
+                <q-item-label class="text-bold">{{nse?.eod?.LifeTimeLow}}</q-item-label>
+                <q-item-label overline>{{date.formatDate(nse?.eod?.lowdate, 'DD-MMM-YYYY')}}</q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label class="text-bold text-right">{{nse?.eod?.LifeTimeHigh}}</q-item-label>
+                <q-item-label overline class="text-right">{{date.formatDate(nse?.eod?.highdate, 'DD-MMM-YYYY')}}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-separator />
+            
+          </div>
+      </div>
+      <div class="col-12 col-md-4 bg-orange-1">
+      <q-item>
+        <q-item-section>
+        <q-item-label class="text-h6 text-deep-orange-6">Return Calculations</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline class="text-left">CAGR</q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label class="text-bold text-right">{{cagr}}%</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline class="text-left">Return in %</q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label class="text-bold text-right">{{preturn}}%</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline class="text-left">Return per allotment</q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label class="text-bold text-right">Rs. {{allotReturn}}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-separator />
+      <q-item>
+        <q-item-section>
+          <q-item-label class="text-h6 text-deep-orange-6">Market Cap ({{nse?.info?.mcaptype}})</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline class="text-left">At the time of IPO</q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label class="text-bold text-right">{{mcapAtIpo}}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline class="text-left">At the time of Listing</q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label class="text-bold text-right">{{mcapAtListing}}</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item>
+        <q-item-section>
+          <q-item-label overline class="text-left">Current Market Cap</q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label class="text-bold text-right">{{nse?.info?.MCAP}} Cr</q-item-label>
+        </q-item-section>
+      </q-item>
+      </div>
+  </div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -298,33 +297,6 @@ h3{
   margin-top: -15px;
   font-size:14px;
 }
-.wp-style{
-  color: #222; 
-  font-family: 'Open Sans', sans-serif; 
-  font-size: 15px; font-weight: 400; 
-  line-height: 24px; 
-  margin: 0 0 14px; 
-  text-align:justify;
-}
 
-.wp-style h3{
-  font-size: 21px;
-  font-weight: 500;
-  letter-spacing: 0;
-  line-height: 1.5em;
-  margin-bottom: 15px;
-  position: relative;
-  text-transform: uppercase;
-}
-
-.wp-style h3:before{
-   position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 60px;
-  height: 2px;
-  content: "";
-  background-color: #c50000;
-}
 
 </style>

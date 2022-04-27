@@ -2,7 +2,7 @@
 <template>
 <q-card flat class="q-mt-md rounded-border bg-orange-1">
 <q-card-section><div class="text-h5" style="font-family: 'Josefin Sans', sans-serif;">Promoters</div></q-card-section>
-    <q-card-section horizontal class="q-pa-md q-gutter-md">
+    <q-card-section class="q-pa-md q-gutter-md">
         <q-card v-for="promoter in promoters" :key="promoter.id" flat>
             <q-card-section horizontal>
                 <q-card-section class="col-5 flex items-start">
@@ -34,10 +34,9 @@ import { axios } from '../boot/axios'
 const props = defineProps({
     data: Object
   })
-console.log(props.ipo_id)
 const promoters = ref(props.data)
 onMounted(async() => {
     //promoters.value = await axios.get('https://droplet.netserve.in/promoters?ipo_id='+props.ipo_id).then(r => r.data)
-    console.log(promoters.value)
+    console.log(props.data)
 })
 </script>
