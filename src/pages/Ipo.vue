@@ -16,10 +16,28 @@
       <q-card-section v-if="(nse && nse.listing_date) || (bse && bse.listing_date)">
         <CurInfo :nse="nse" :bse="bse" />
       </q-card-section>
-      <q-card-section id="promotors">
+      <q-card-section v-if="ipo.ipo_id">
+        <IssueDetail :data="ipo" :id="ipo.ipo_id" />
+      </q-card-section>
+      <q-card-section v-if="ipo.about_html" id="info">
+        <Info :info="ipo.about_html" />
+      </q-card-section>
+      <q-card-section v-if="ipo.issue_objects_html" id="objects">
+        <Objects :content="ipo.issue_objects_html" />
+      </q-card-section>
+      <q-card-section id="promotors" v-if="ipo.promoters">
         <Promoters :data="ipo.promoters" />
       </q-card-section>
-    </q-card>
+      <q-card-section id="financials" v-if="ipo.financials">
+        <Financials :content="ipo.financials" />
+      </q-card-section>
+      <q-card-section id="peers" v-if="ipo.peers">
+        <Peers :content="ipo.peers" />
+      </q-card-section>
+      <q-card-section v-if="ipo.review_html" id="review">
+        <Review :data="ipo.review_html" />
+      </q-card-section>
+  </q-card>
     
   </q-page>
   <q-page-scroller expand position="top" :scroll-offset="350" :offset="[0, 0]">
@@ -30,7 +48,7 @@
 </template>
 
 <script setup>
-  import { ref, onBeforeMount } from 'vue'
+  import { ref, onMounted } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { axios } from '../boot/axios'
   import { useMeta, scroll } from 'quasar'
@@ -40,6 +58,7 @@
   import CurInfo from '../components/CurInfo.vue'
   import Promoters from '../components/Promoters.vue'
   import Info from '../components/Info.vue'
+  import IssueDetail from '../components/IssueDetail.vue'
   import Financials from '../components/Financials.vue'
   import Peers from '../components/Peers.vue'
   import Objects from '../components/Objects.vue'
@@ -131,14 +150,14 @@
   }
 
   const nextIpo = (ipo) => {
-       router.push({name: 'ipo', params: { id: ipo.ipo_id+'-'+encodeURIComponent(ipo.company_name) }})
        ipo.value = {}
        nse.value = {}
        bse.value = {}
        init(ipo.ipo_id)
+       router.push({name: 'ipo', params: { id: ipo.ipo_id+'-'+encodeURIComponent(ipo.company_name) }})
     }
 
-  onBeforeMount(async() => {
+  onMounted(async() => {
     scrips.value = await axios.get('https://droplet.netserve.in/nse/index').then(r => JSON.parse(r.data))
     nseEod.value = await axios.get('https://droplet.netserve.in/nse/eod').then(r => JSON.parse(r.data))
     init(ipo_id.value)

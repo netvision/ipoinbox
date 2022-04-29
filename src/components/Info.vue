@@ -1,26 +1,21 @@
 <template>
     <q-card flat class="q-mt-md rounded-border bg-orange-1">
       <q-card-section>
-      <div class="text-h5">Info</div>
-        <div class="wp-style" v-html="content" />
+      <div class="text-h3 q-pb-xl">About the Company</div>
+        <div class="wp-style" v-html="html" />
       </q-card-section>
     </q-card>
 </template>
 <script setup>
-import { ref, onMounted  } from 'vue'
-import { axios } from '../boot/axios'
-
+import { ref, onMounted } from 'vue'
 const props = defineProps({
-    id: Number
+    info: String
   })
-const content = ref('')
-onMounted(async() => {
-    console.log(props.id)
-    if(props.id != null){
-        let post = await axios.get('https://blog.ipoinbox.com/wp-json/wp/v2/posts/'+props.id).then(r => r.data)
-        content.value = post.content.rendered
-    }   
+const html = ref('');
+onMounted(() => {
+  html.value = props.info.replace(/>\s+</g,'><')
 })
+
 
 </script>
 <style>
@@ -41,8 +36,7 @@ h3{
   color: #222; 
   font-family: 'Open Sans', sans-serif; 
   font-size: 15px; font-weight: 400; 
-  line-height: 24px; 
-  margin: 0 0 14px; 
+  line-height: 24px;
   text-align:justify;
 }
 
@@ -52,7 +46,7 @@ h3{
   font-weight: 500;
   letter-spacing: 0;
   line-height: 1.5em;
-  margin-bottom: 15px;
+  padding-top: 15px;
   position: relative;
   text-transform: uppercase;
 }
@@ -65,6 +59,26 @@ h3{
   height: 2px;
   content: "";
   background-color: #c50000;
+}
+
+.wp-style ul{
+  list-style: disc inside;
+}
+
+.wp-style ul ul{
+  margin-left:4vw;
+}
+
+.wp-style .contact{
+  display: flex;
+  justify-content: space-between;
+  margin-top:10px;
+}
+.contact strong{
+  border-bottom: 1px solid #333;
+  padding-bottom:2px;
+  margin-bottom:5px;
+  text-transform: uppercase;
 }
 
 </style>

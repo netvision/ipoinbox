@@ -1,43 +1,71 @@
 /* eslint-disable vue/valid-template-root */
 <template>
 <q-card flat class="q-mt-md rounded-border bg-orange-1">
-<q-card-section><div class="text-h5" style="font-family: 'Josefin Sans', sans-serif;">Promoters</div></q-card-section>
-    <q-card-section horizontal class="q-pa-md q-gutter-md">
-        <q-card v-for="promoter in promoters" :key="promoter.id" flat>
-            <q-card-section horizontal>
-                <q-card-section class="col-5 flex items-start">
-                <q-img
-                    class="rounded-borders"
-                    :src="promoter.photo"
-                />
-                <div class="q-pa-md">
-                    <p class="text-subtitle1">Pre-offer Shareholding</p>
-                    <p class="text-overline">{{promoter.pre_offer_shares}} ({{promoter.pre_offer_percentage}}%)</p>
-                    <q-separator spaced />
-                    <p class="text-subtitle1">Post-offer Shareholding</p>
-                    <p class="text-overline">{{promoter.post_offer_shares}} ({{promoter.post_offer_percentage}}%)</p>
-                </div>
-                </q-card-section>
-                <q-card-section class="q-pt-xs">
-                <div class="text-overline">{{promoter.type}}</div>
-                <div class="text-h5 q-mt-sm q-mb-xs">{{promoter.name}}</div>
-                <div class="text-caption text-grey" v-html="promoter.description"></div>
-                </q-card-section>
-            </q-card-section>
-        </q-card>
+    <q-card-section>
+        <div class="text-h5" style="font-family: 'Josefin Sans', sans-serif;">Promoters</div>
+    </q-card-section>
+    <q-card-section class="q-pa-md">
+        <div class="row">
+            <div class="col-12 col-md-4" v-for="promoter in promoters" :key="promoter.id">
+                <q-card flat class="q-ma-md">
+                    <q-card-section v-if="!promoter.photo.includes('placeholder')">
+                        <q-avatar square size="100px">
+                            <img :src="promoter.photo" />
+                        </q-avatar>
+                    </q-card-section>
+                    <q-card-section class="q-pt-xs">
+                        <div class="text-overline">{{promoter.type}}</div>
+                        <div class="text-h5 q-mt-sm q-mb-xs">{{promoter.name}}</div>
+                        <div class="text-caption text-grey" v-html="promoter.description"></div>
+                    </q-card-section>
+                </q-card>
+            </div>
+        </div>
+        <div class="text-h6" style="font-family: 'Josefin Sans', sans-serif;">Promoters Shareholding Pattern</div>
+        <div class="">
+            <table class="tw-table-fixed tw-w-full tw-border">
+                <thead class="tw-bg-gray-200">
+                <tr class="tw-border tw-border-gray-400">
+                    <th rowspan="2" class="tw-border tw-border-gray-400">Name</th>
+                    <th colspan="2" class="tw-border tw-border-gray-400">Pre Offer</th>
+                    <th colspan="2" class="tw-border tw-border-gray-400">Post Offer</th>
+                </tr>
+                <tr class="tw-border tw-border-gray-400">
+                    <th class="tw-border tw-border-gray-400">Eq. Shares</th>
+                    <th class="tw-border tw-border-gray-400">Percent</th>
+                    <th class="tw-border tw-border-gray-400">Eq. Shares</th>
+                    <th class="tw-border tw-border-gray-400">Percent</th>
+                </tr>
+                </thead>
+                <tbody class="">
+                    <tr v-for="holding in holdings" :key="holding.name" class="tw-border tw-border-gray-400">
+                        <td class="tw-px-4 tw-py-2 tw-text-gray-900 tw-whitespace-nowrap tw-border tw-border-gray-400">{{holding.name}}</td>
+                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-whitespace-nowrap tw-border tw-border-gray-400">{{holding.preOffer}}</td>
+                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-whitespace-nowrap tw-border tw-border-gray-400">{{holding.prePercent}}</td>
+                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-whitespace-nowrap tw-border tw-border-gray-400">{{holding.postOffer}}</td>
+                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-whitespace-nowrap tw-border tw-border-gray-400">{{holding.postPercent}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        
+        </div>
+        
     </q-card-section>
 </q-card>
 </template>
 <script setup>
-import { ref, onMounted  } from 'vue'
-import { axios } from '../boot/axios'
+import { ref } from 'vue'
+//import { axios } from '../boot/axios'
 const props = defineProps({
     data: Object
   })
-console.log(props.ipo_id)
-const promoters = ref(props.data)
-onMounted(async() => {
-    //promoters.value = await axios.get('https://droplet.netserve.in/promoters?ipo_id='+props.ipo_id).then(r => r.data)
-    console.log(promoters.value)
-})
+const promoters = ref([])
+const holdings = ref([])
+if(props.data.length > 0){
+    props.data.forEach(promoter => {
+        holdings.value.push({name: promoter.name, preOffer: promoter.pre_offer_shares, prePercent: promoter.pre_offer_percentage, postOffer: promoter.post_offer_shares, postPercent: promoter.post_offer_percentage})
+        promoters.value.push({name: promoter.name, type: promoter.type, photo: promoter.photo, description: promoter.description})
+    })
+}
+
 </script>

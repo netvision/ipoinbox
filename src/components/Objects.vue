@@ -12,5 +12,5 @@
     const props = defineProps({
         content: String
     })
-    const content = ref(props.content)
+    
 </script>
