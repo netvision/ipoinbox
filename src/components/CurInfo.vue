@@ -1,5 +1,5 @@
 <template>
-  <div class="row q-col-gutter-sm">
+  <div class="row q-col-gutter-sm"  v-if="nse">
       <div class="col-12 col-md-4 bg-orange-1">
           <div v-if="nse && nse.liveQuote" id="nse-live" class="bg-orange-3">
               <h3 :class="(nse.liveQuote.change > 0) ? 'text-positive text-h3': 'text-negative text-h3'">{{nse?.liveQuote?.lastPrice}}</h3>
@@ -34,7 +34,7 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label overline class="text-right">Close</q-item-label>
-                <q-item-label class="text-bold text-right">{{(nse.liveQuote && nse.liveQuote.closePrice > 0) ? nse.liveQuote.closePrice : 'Live'}}</q-item-label>
+                <q-item-label class="text-bold text-right">{{(nse && nse.liveQuote && nse.liveQuote.closePrice > 0) ? nse.liveQuote.closePrice : 'Live'}}</q-item-label>
               </q-item-section>
             </q-item>
             <q-separator />
@@ -99,7 +99,7 @@
                 <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse?.low)" :max="Math.round(nse?.high)" v-model="listingClose" width="100%" disabled />
               </q-item-section>
             </q-item>
-            <q-item dense>
+            <q-item dense v-if="nse">
                 <q-item-section>
                 <q-item-label class="text-bold">{{nse?.low}}</q-item-label>
               </q-item-section>
@@ -109,13 +109,13 @@
             </q-item>
             
             <q-separator />
-            <q-item v-if="nse.liveQuote">
+            <q-item v-if="nse && nse.liveQuote">
               <q-item-section>
                 <q-item-label class="text-subtitle1 q-pb-sm">52 Week Low and High</q-item-label>
                 <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse.liveQuote.low52.replace(/,/g, ''))" :max="Math.round(nse.liveQuote.high52.replace(/,/g, ''))" v-model="close" width="100%" disabled />
               </q-item-section>
             </q-item>
-            <q-item dense v-if="nse.liveQuote">
+            <q-item dense v-if="nse && nse.liveQuote">
                 <q-item-section>
                 <q-item-label class="text-bold">{{nse?.liveQuote?.low52}}</q-item-label>
               </q-item-section>
@@ -130,7 +130,7 @@
                 <vue-slider :processStyle="style" :railStyle="style" :min="Math.round(nse.eod.LifeTimeLow)" :max="Math.round(nse.eod.LifeTimeHigh)" v-model="close" width="100%" disabled />
               </q-item-section>
             </q-item>
-            <q-item dense v-if="nse.eod">
+            <q-item dense v-if="nse && nse.eod">
                 <q-item-section>
                 <q-item-label class="text-bold">{{nse?.eod?.LifeTimeLow}}</q-item-label>
                 <q-item-label overline>{{date.formatDate(nse?.eod?.lowdate, 'DD-MMM-YYYY')}}</q-item-label>
@@ -248,23 +248,25 @@ onMounted(async() => {
     let liveQuote = await axios.get('https://stockapi.ipoinbox.com/bse?companyCode='+bse.value.scrip_code.trim()).then(r => r.data)
     bse.value.liveQuote = liveQuote
   }
-  if(nse.value.scrip_code){
+  if(nse.value && nse.value.scrip_code){
     let nselive = await axios.get('https://stockapi.ipoinbox.com/quote?companyName='+nse.value.scrip_code.trim()).then(r => r.data)
       if(nselive.data[0]){
         nse.value.liveQuote = nselive.data[0]
         nse.value.liveQuote.lastUpdate = nselive.lastUpdateTime
       }
+
+    let duration = date.getDateDiff(new Date(), new Date(nse.value.listing_date), 'days') / 365
+    let gain = nse.value.eod.Close / nse.value.issue_price
+    cagr.value = ((Math.pow(gain, 1/duration) - 1)*100).toFixed(2)
+    let ret = (nse.value.eod.Close - nse.value.issue_price) * 100 / nse.value.issue_price
+    preturn.value = ret.toFixed(2)
+    allotReturn.value = ((nse.value.eod.Close - nse.value.issue_price) * nse.value.lot_size).toFixed(2)
+
+    mcapAtIpo.value = formatNum(nse.value.totalShares * nse.value.issue_price)
+    mcapAtListing.value = formatNum(nse.value.totalShares * nse.value.listing_price)
   }
 
-  let duration = date.getDateDiff(new Date(), new Date(nse.value.listing_date), 'days') / 365
-  let gain = nse.value.eod.Close / nse.value.issue_price
-  cagr.value = ((Math.pow(gain, 1/duration) - 1)*100).toFixed(2)
-  let ret = (nse.value.eod.Close - nse.value.issue_price) * 100 / nse.value.issue_price
-  preturn.value = ret.toFixed(2)
-  allotReturn.value = ((nse.value.eod.Close - nse.value.issue_price) * nse.value.lot_size).toFixed(2)
-
-  mcapAtIpo.value = formatNum(nse.value.totalShares * nse.value.issue_price)
-  mcapAtListing.value = formatNum(nse.value.totalShares * nse.value.listing_price)
+  
 })
 
 </script>

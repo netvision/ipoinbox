@@ -4,9 +4,15 @@
     <div class="tw-text-2xl tw-font-serif tw-text-orange-500 tw-pb-4 tw-border-black">Issue Overview</div>
 
     <div class="row q-col-gutter-sm">
-    <div class="col-12 col-md-4 q-ma-sm bg-orange-1">            
+    <div class="col-12 col-md-4 q-ma-sm bg-orange-1">
+        <div v-if="ipo.price_band_low && ipo.price_band_low > 0">
         <q-item-label overline>Price Band</q-item-label>
         <q-item-label><span class="text-bold">&#8377;{{ipo.price_band_low}} - &#8377;{{ipo.price_band_high}}</span></q-item-label>
+        </div>
+        <div v-else>
+        <q-item-label overline>Price</q-item-label>
+        <q-item-label><span class="text-bold">&#8377;{{ipo.price_band_high}}</span></q-item-label>
+        </div>
         <q-separator spaced color="orange" />
         <q-item-label overline>Lot Size and Amount</q-item-label>
         <q-item-label><span class="text-bold">{{ipo.lot_size}} Shares @ &#8377;{{ipo.lot_size * ipo.price_band_high}}</span></q-item-label>
@@ -61,7 +67,7 @@
         <q-item-label><span class="text-bold">{{date.formatDate(ipo.t_commencement, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
         <q-separator spaced color="orange" />
         <q-item-label>Anchor Unlocking</q-item-label>
-        <q-item-label><span class="text-bold">{{date.formatDate(ipo.t_anchor_unlocking, 'dddd, Do MMMM, YYYY')}}</span></q-item-label>
+        <q-item-label><span class="text-bold">{{(ipo.t_anchor_unlocking) ? date.formatDate(ipo.t_anchor_unlocking, 'dddd, Do MMMM, YYYY') : 'NA'}}</span></q-item-label>
         <q-separator spaced color="orange" />
     </div>
     </div>
