@@ -68,8 +68,10 @@ const subTimes = (quota, subs) => {
 
 
 axios.get('https://droplet.netserve.in/ipo-cat-quota?ipo_id='+props.subs[0].ipo_id).then(r => {
-  let qib = r.data.filter(q => q.cat_id === 1)[0].quota
-  let anchor = r.data.filter(q => q.cat_id === 6)[0].quota
+  let qib = r.data.filter(q => q.cat_id === 1)
+  let anchor = r.data.filter(q => q.cat_id === 6)
+  qib = (qib && qib.length > 0) ? qib[0].quota : 0
+  anchor = (anchor && anchor.length > 0) ? anchor[0].quota : 0
   netQib.value = qib - anchor
 
 })
