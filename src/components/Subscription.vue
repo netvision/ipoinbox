@@ -10,7 +10,13 @@
       </thead>
       <tbody>
       <tr v-for="sub in subscriptions" :key="sub.day" class="tw-border tw-border-gray-400">
-      <td class="tw-px-4 tw-py-2 tw-text-gray-900 tw-whitespace-nowrap tw-border tw-border-gray-400">{{date.formatDate(sub.day, 'DD MMM, YYYY')}}</td><td v-for="l in sub.logs" :key="l.id" class="tw-px-4 tw-py-2 tw-text-gray-900 tw-whitespace-nowrap tw-border tw-border-gray-400">{{subTimes(l.quota.quota, l.subscription)}} <span v-if="l.applications">(<q-icon name="content_copy" /> {{l.applications}})</span></td>
+        <td class="tw-px-4 tw-py-2 tw-text-gray-900 tw-whitespace-nowrap tw-border tw-border-gray-400">
+          {{date.formatDate(sub.day, 'DD MMM, YYYY')}}
+        </td>
+        <td v-for="l in sub.logs" :key="l.id" class="tw-px-4 tw-py-2 tw-text-gray-900 tw-whitespace-nowrap tw-border tw-border-gray-400">
+          <div v-if="l.cat_id === 1">{{subTimes(netQib, l.subscription)}}<span v-if="l.applications">( <q-icon name="content_copy" />{{l.applications}} )</span></div>
+          <div v-else>{{subTimes(l.quota.quota, l.subscription)}}<span v-if="l.applications">( <q-icon name="content_copy" />{{l.applications}} )</span></div>
+        </td>
       </tr>
       </tbody>
       </table>
@@ -30,6 +36,7 @@ const props = defineProps({
 let start = new Date(props.open)
 let end = new Date(props.close)
 const subscriptions = ref([])
+const netQib = ref(0)
 for(let i = 0; i <= date.getDateDiff(end, start, 'days'); i++){
   let day = date.addToDate(start, {days: i})
   let dlogs = []
@@ -47,8 +54,8 @@ for(let i = 0; i <= date.getDateDiff(end, start, 'days'); i++){
     if(retail && retail.length > 0) dlogs.push(retail[0])
     if(employee && employee.length > 0) dlogs.push(employee[0])
     if(shareholder && shareholder.length > 0) dlogs.push(shareholder[0])
-    console.log(dlogs)
     subscriptions.value.push({day: day, logs: dlogs})
+    console.log(dlogs)
   }
 }
 
@@ -59,5 +66,12 @@ const subTimes = (quota, subs) => {
   else return 'NA'
 }
 
+
+axios.get('https://droplet.netserve.in/ipo-cat-quota?ipo_id='+props.subs[0].ipo_id).then(r => {
+  let qib = r.data.filter(q => q.cat_id === 1)[0].quota
+  let anchor = r.data.filter(q => q.cat_id === 6)[0].quota
+  netQib.value = qib - anchor
+
+})
 
 </script>
