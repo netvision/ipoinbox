@@ -27,8 +27,8 @@
                 <thead class="tw-bg-gray-200">
                 <tr class="tw-border tw-border-gray-400">
                     <th rowspan="2" class="tw-border tw-border-gray-400">Name</th>
-                    <th colspan="2" class="tw-border tw-border-gray-400">Pre Offer</th>
-                    <th colspan="2" class="tw-border tw-border-gray-400">Post Offer</th>
+                    <th colspan="2" class="tw-border tw-border-gray-400 tw-text-center">Pre Offer</th>
+                    <th colspan="2" class="tw-border tw-border-gray-400 tw-text-center">Post Offer</th>
                 </tr>
                 <tr class="tw-border tw-border-gray-400">
                     <th class="tw-border tw-border-gray-400">Eq. Shares</th>
@@ -39,11 +39,11 @@
                 </thead>
                 <tbody class="">
                     <tr v-for="holding in holdings" :key="holding.name" class="tw-border tw-border-gray-400">
-                        <td class="tw-px-4 tw-py-2 tw-text-gray-900 tw-whitespace-nowrap tw-border tw-border-gray-400">{{holding.name}}</td>
-                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-whitespace-nowrap tw-border tw-border-gray-400">{{holding.preOffer}}</td>
-                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-whitespace-nowrap tw-border tw-border-gray-400">{{holding.prePercent}}</td>
-                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-whitespace-nowrap tw-border tw-border-gray-400">{{holding.postOffer}}</td>
-                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-whitespace-nowrap tw-border tw-border-gray-400">{{holding.postPercent}}</td>
+                        <td class="tw-px-4 tw-py-2 tw-text-gray-900 tw-border tw-border-gray-400">{{holding.name}}</td>
+                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-border tw-border-gray-400">{{holding.preOffer}}</td>
+                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-border tw-border-gray-400">{{holding.prePercent}}</td>
+                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-border tw-border-gray-400">{{holding.postOffer}}</td>
+                        <td class="tw-px-4 tw-py-2 tw-text-gray-700 tw-border tw-border-gray-400">{{holding.postPercent}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -69,3 +69,9 @@ if(props.data.length > 0){
 }
 
 </script>
+<style>
+ul {
+    list-style: disc inside;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+</style>
