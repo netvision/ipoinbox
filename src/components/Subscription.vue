@@ -15,7 +15,7 @@
         </td>
         <td v-for="l in sub.logs" :key="l.id" class="tw-px-4 tw-py-2 tw-text-gray-900 tw-whitespace-nowrap tw-border tw-border-gray-400">
           <div v-if="l.cat_id === 1">{{subTimes(netQib, l.subscription)}}<span v-if="l.applications">( <q-icon name="content_copy" />{{l.applications}} )</span></div>
-          <div v-else>{{subTimes(l.quota.quota, l.subscription)}}<span v-if="l.applications">( <q-icon name="content_copy" />{{l.applications}} )</span></div>
+          <div v-else>{{subTimes(l.quota.quota, l.subscription)}} <span v-if="l.applications">( <q-icon name="content_copy" />{{l.applications}} )</span></div>
         </td>
       </tr>
       </tbody>
@@ -55,7 +55,6 @@ for(let i = 0; i <= date.getDateDiff(end, start, 'days'); i++){
     if(employee && employee.length > 0) dlogs.push(employee[0])
     if(shareholder && shareholder.length > 0) dlogs.push(shareholder[0])
     subscriptions.value.push({day: day, logs: dlogs})
-    console.log(dlogs)
   }
 }
 

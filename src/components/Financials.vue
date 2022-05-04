@@ -12,6 +12,8 @@
               :columns="financials.pl.columns"
               row-key="name"
               hide-bottom
+              flat
+              bordered
               />
           </div>
           <div class="col-12 col-md-6">
@@ -21,6 +23,8 @@
                 :columns="financials.bs.columns"
                 row-key="name"
                 hide-bottom
+                flat
+                bordered
                 >
             </q-table>
           </div>
@@ -41,5 +45,7 @@ const financials = ref(JSON.parse(props.content))
 
 </script>
 <style>
-
+.scroll {
+overflow: hidden;
+}
 </style>

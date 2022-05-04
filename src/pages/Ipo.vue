@@ -34,6 +34,9 @@
       <q-card-section id="peers" v-if="ipo.peers">
         <Peers :content="ipo.peers" />
       </q-card-section>
+      <q-card-section id="swot" v-if="ipo.swot">
+        <Swot :data="ipo.swot" />
+      </q-card-section>
       <q-card-section id="subs" v-if="subscriptions && subscriptions.length > 0">
         <Subscription :subs = "subscriptions" :open = "ipo.open_date" :close = "ipo.close_date"  />
       </q-card-section>
@@ -65,6 +68,7 @@
   import Financials from '../components/Financials.vue'
   import Peers from '../components/Peers.vue'
   import Objects from '../components/Objects.vue'
+  import Swot from '../components/Swot.vue'
   import Subscription from '../components/Subscription.vue'
   import Listings from '../components/Listings.vue'
   import Review from '../components/Review.vue'
@@ -111,7 +115,7 @@
 
   const init = async(ipo_id) => {
     ipo.value = await axios.get('https://droplet.netserve.in/ipos/'+ipo_id+'?expand=registrar,promoters,listings,subscriptions,sector').then(r => r.data)
-    //console.log(ipo.value)
+    console.log(ipo.value)
     let listings = ipo.value.listings
     if(listings.length > 0){
         let nseData = listings.filter(r => r.exchange === 'NSE')[0]
