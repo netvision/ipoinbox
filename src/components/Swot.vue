@@ -16,7 +16,7 @@
                 <div v-html="sanitize(JSON.parse(data).opportunities_html)" />
             </div>
             <div class="col-12 col-md-3 q-pa-md tw-h-full">
-                <h6 class="text-h6">Opportunities <span v-if="JSON.parse(data).threats_score">({{JSON.parse(data).threats_score}})</span></h6>
+                <h6 class="text-h6">Threats <span v-if="JSON.parse(data).threats_score">({{JSON.parse(data).threats_score}})</span></h6>
                 <div v-html="sanitize(JSON.parse(data).threats_html)" />
             </div>
             
