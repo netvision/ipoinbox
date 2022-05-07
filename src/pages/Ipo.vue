@@ -25,8 +25,8 @@
       <q-card-section v-if="ipo.issue_objects_html" id="objects">
         <Objects :content="ipo.issue_objects_html" />
       </q-card-section>
-      <q-card-section id="promotors" v-if="ipo.promoters">
-        <Promoters :data="ipo.promoters" />
+      <q-card-section id="promotors" v-if="ipo.promoters || ipo.promotors_html">
+        <Promoters :data="ipo.promoters" :note="ipo.promotors_html" />
       </q-card-section>
       <q-card-section id="financials" v-if="ipo.financials">
         <Financials :content="ipo.financials" />

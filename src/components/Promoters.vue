@@ -1,11 +1,11 @@
 /* eslint-disable vue/valid-template-root */
 <template>
 <q-card flat class="q-mt-md rounded-border bg-orange-1">
-    <q-card-section>
+    <q-card-section v-if="promoters.length > 0 || note">
         <div class="text-h5" style="font-family: 'Josefin Sans', sans-serif;">Promoters</div>
     </q-card-section>
     <q-card-section class="q-pa-md">
-        <div class="row items-stretch q-col-gutter-sm">
+        <div class="row items-stretch q-col-gutter-sm" v-if="promoters.length > 0">
             <div class="col-12 col-md-4 " v-for="promoter in promoters" :key="promoter.id">
                 <div class="q-pa-md bg-grey-1 tw-h-full">
                     <div v-if="!promoter.photo.includes('placeholder')">
@@ -21,8 +21,8 @@
                 </div>
             </div>
         </div>
-        <div class="text-h6 q-mt-md" style="font-family: 'Josefin Sans', sans-serif;">Promoters Shareholding Pattern</div>
-        <div class="">
+        <div v-if="holdings.length > 0" class="text-h6 q-mt-md" style="font-family: 'Josefin Sans', sans-serif;">Promoters Shareholding Pattern</div>
+        <div v-if="holdings.length > 0" class="">
             <table class="tw-table-fixed tw-w-full tw-border">
                 <thead class="tw-bg-gray-200">
                 <tr class="tw-border tw-border-gray-400">
@@ -49,7 +49,7 @@
             </table>
         
         </div>
-        
+        <div v-if="note" v-html="note"></div>
     </q-card-section>
 </q-card>
 </template>
@@ -57,7 +57,8 @@
 import { ref } from 'vue'
 //import { axios } from '../boot/axios'
 const props = defineProps({
-    data: Object
+    data: Object,
+    note: String
   })
 const promoters = ref([])
 const holdings = ref([])
