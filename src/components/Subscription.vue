@@ -40,22 +40,22 @@ const netQib = ref(0)
 for(let i = 0; i <= date.getDateDiff(end, start, 'days'); i++){
   let day = date.addToDate(start, {days: i})
   let dlogs = []
-  if(date.getDayOfWeek(day) < 6){
-    let logs = props.subs.filter(sub => sub.day == date.formatDate(day, 'YYYY-MM-DD'))
-    let qib = logs.filter(log => log.cat_id == 1)
-    let bigHni = logs.filter(log => log.cat_id == 2)
-    let smallHni = logs.filter(log => log.cat_id == 8)
-    let retail = logs.filter(log => log.cat_id == 3)
-    let employee = logs.filter(log => log.cat_id == 5)
-    let shareholder = logs.filter(log => log.cat_id == 4)
-    if(qib && qib.length > 0) dlogs.push(qib[0])
-    if(bigHni && bigHni.length > 0) dlogs.push(bigHni[0])
-    if(smallHni && smallHni.length > 0) dlogs.push(smallHni[0])
-    if(retail && retail.length > 0) dlogs.push(retail[0])
-    if(employee && employee.length > 0) dlogs.push(employee[0])
-    if(shareholder && shareholder.length > 0) dlogs.push(shareholder[0])
-    subscriptions.value.push({day: day, logs: dlogs})
-  }
+  let logs = props.subs.filter(sub => sub.day == date.formatDate(day, 'YYYY-MM-DD'))
+  let qib = logs.filter(log => log.cat_id == 1)
+  let bigHni = logs.filter(log => log.cat_id == 2)
+  let smallHni = logs.filter(log => log.cat_id == 8)
+  let retail = logs.filter(log => log.cat_id == 3)
+  let employee = logs.filter(log => log.cat_id == 5)
+  let shareholder = logs.filter(log => log.cat_id == 4)
+  if(qib && qib.length > 0) dlogs.push(qib[0])
+  if(bigHni && bigHni.length > 0) dlogs.push(bigHni[0])
+  if(smallHni && smallHni.length > 0) dlogs.push(smallHni[0])
+  if(retail && retail.length > 0) dlogs.push(retail[0])
+  if(employee && employee.length > 0) dlogs.push(employee[0])
+  if(shareholder && shareholder.length > 0) dlogs.push(shareholder[0])
+  
+  if(dlogs.length > 0) subscriptions.value.push({day: day, logs: dlogs})
+  
 }
 
 const subTimes = (quota, subs) => {
