@@ -9,10 +9,11 @@
             :columns="peers.col"
             row-key="name"
             hide-bottom
+            flat
+            bordered
             />
     </q-card-section>
-    <q-card-section v-if="peers.htmlNotes" v-html="peers.htmlNotes">
-    </q-card-section>
+    <q-card-section v-if="peers.htmlNotes" v-html="peers.htmlNotes"></q-card-section>
       
     </q-card>
 </template>

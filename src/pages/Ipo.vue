@@ -8,7 +8,7 @@
       </div>
     <q-card flat class="rounded-border bg-orange-2">
       <q-card-section>
-        <div class="text-h3 text-deep-orange-6 text-left q-pb-md" style="font-family: 'Josefin Sans', sans-serif;">{{ipo.company_name}}</div> 
+        <div class="text-h3 text-deep-orange-6 text-left q-pb-md" style="font-family: 'Josefin Sans', sans-serif;">{{ipo.company_name}}<span v-if="ipo.ipo_type === 'SME'" class="text-h6">({{ipo.ipo_type}})</span></div> 
         <div class="q-pa-sm flex q-gutter-sm bg-orange-3 rounded-borders">
             <span><a :href="ipo.company_url" target="_blank">{{ipo.company_url}}</a> </span><q-separator color="orange" vertical /><span v-if="nse && nse.url"><a :href="nse.url" target="_blank">NSE</a></span><q-separator color="orange" vertical  v-if="nse && nse.url" /><span v-if="bse && bse.url"><a :href="bse.url" target="_blank">BSE</a></span><q-separator color="orange" vertical  v-if="bse && bse.url" /><span v-if="ipo.rhp_url"><a :href="ipo.rhp_url" target="_blank">Offer Document</a></span><q-separator color="orange" vertical  v-if="ipo.rhp_url" /><span> Registrar: <a :href="registrar?.url" target="_blank">{{registrar?.name}}</a></span> 
         </div> 
@@ -25,14 +25,20 @@
       <q-card-section v-if="ipo.issue_objects_html" id="objects">
         <Objects :content="ipo.issue_objects_html" />
       </q-card-section>
-      <q-card-section id="promotors" v-if="ipo.promoters">
-        <Promoters :data="ipo.promoters" />
+      <q-card-section id="promotors" v-if="ipo.promoters || ipo.promotors_html">
+        <Promoters :data="ipo.promoters" :note="ipo.promotors_html" />
       </q-card-section>
       <q-card-section id="financials" v-if="ipo.financials">
         <Financials :content="ipo.financials" />
       </q-card-section>
       <q-card-section id="peers" v-if="ipo.peers">
         <Peers :content="ipo.peers" />
+      </q-card-section>
+      <q-card-section id="swot" v-if="ipo.swot">
+        <Swot :data="ipo.swot" />
+      </q-card-section>
+      <q-card-section id="subs" v-if="subscriptions && subscriptions.length > 0">
+        <Subscription :subs = "subscriptions" :open = "ipo.open_date" :close = "ipo.close_date"  />
       </q-card-section>
       <q-card-section v-if="ipo.review_html" id="review">
         <Review :data="ipo.review_html" />
@@ -62,6 +68,7 @@
   import Financials from '../components/Financials.vue'
   import Peers from '../components/Peers.vue'
   import Objects from '../components/Objects.vue'
+  import Swot from '../components/Swot.vue'
   import Subscription from '../components/Subscription.vue'
   import Listings from '../components/Listings.vue'
   import Review from '../components/Review.vue'
@@ -82,6 +89,7 @@
   const val = ref([])
   const pre = ref({})
   const nxt = ref({})
+  const subscriptions = ref([])
 
   const scrollTo = (id) => {
     const ele = document.getElementById(id)
@@ -137,12 +145,11 @@
     console.log(prenext)
     pre.value = prenext.pre[prenext.pre.findIndex(x => x.ipo_id === ipo.value.ipo_id) + 1]
     nxt.value = prenext.next[prenext.next.findIndex(x => x.ipo_id === ipo.value.ipo_id) + 1]
-    console.log(nxt.value)
+    //console.log(nxt.value)
     // let nifty = await axios.get('https://stockapi.ipoinbox.com/quote?companyName='+nse.value.scrip_code).then(r => r.data)
-    
-    
     registrar.value = ipo.value.registrar
     brlms.value = JSON.parse(ipo.value.brlms_json)
+    subscriptions.value = await axios.get('https://droplet.netserve.in/ipo-subscription-logs?expand=cat,quota&ipo_id='+ipo_id).then(r => r.data)
     useMeta({
       title: ipo.value.company_name,
       titleTemplate: title => `${title} - IPO Inbox`,

@@ -67,6 +67,7 @@ h3{
 
 .wp-style ul ul{
   margin-left:4vw;
+  list-style: circle inside;
 }
 
 .wp-style .contact{
