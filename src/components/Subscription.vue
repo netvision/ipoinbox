@@ -5,7 +5,7 @@
       <table class="tw-table-fixed tw-w-full tw-border">
       <thead class="tw-bg-gray-200">
       <tr class="tw-border tw-border-gray-400">
-      <th class="tw-border tw-border-gray-400">Day</th><th class="tw-border tw-border-gray-400" v-for="log in subscriptions[0].logs" :key="log.id">{{log.cat.short_name}}</th>
+      <th class="tw-border tw-border-gray-400">Day</th><th class="tw-border tw-border-gray-400" v-for="log in subscriptions[0].logs" :key="log.id"><span v-if="log.cat_id === 4 && log.ipo_id === 398">Policyholders</span><span v-else>{{log.cat.short_name}}</span></th>
       </tr>
       </thead>
       <tbody>
