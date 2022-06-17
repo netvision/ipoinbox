@@ -2,8 +2,9 @@
 <q-ajax-bar ref="bar" position="top" color="accent" size="10px" />
 <q-page class="q-pa-md">
   <div class="row">
-    <div><h3 class="text-h3 q-mb-md">Recent Open Market Buybacks</h3></div>
-    <div class="tw-text-right"><q-btn @click="newBuybackModal = true">Add New</q-btn></div>
+    <div class="col-9"><h3 class="text-h3 q-mb-md">Recent Open Market Buybacks</h3></div>
+    <q-space />
+    <div class="col text-right"><q-btn @click="newBuybackModal = true">Add New</q-btn></div>
   </div>
     
     <q-list v-if="ombbs">
