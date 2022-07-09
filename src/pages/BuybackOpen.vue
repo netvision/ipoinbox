@@ -85,6 +85,10 @@
             <div class="col"><q-input outlined v-model="buyback.total_shares" label="Total Shares of the Company" /></div>
             <div class="col"><q-input outlined v-model="buyback.free_float" label="Shares in Public (Freefloat)" /></div>
           </div>
+           <div class="row q-gutter-md q-mt-md">
+            <div class="col"><q-input outlined v-model="buyback.deliverable_nse" label="Deliverable at NSE" /></div>
+            <div class="col"><q-input outlined v-model="buyback.deliverable_bse" label="Deliverable at BSE" /></div>
+          </div>
           <div class="row q-gutter-md q-mt-md">
             <div class="col">
               <q-input filled v-model="buyback.start_date" label="Start Date">
@@ -196,10 +200,7 @@ const dateFormat = (dateString) => {
 }
 
 const curFormat = (val) => {
-    if(val >= 10000000) val = (val/10000000).toFixed(2) + ' Cr';
-    else if(val >= 100000) val = (val/100000).toFixed(2) + ' L';
-    else if(val >= 1000) val = (val/1000).toFixed(2) + ' K';
-    return val;
+    return (val/10000000).toFixed(2) + ' Cr';
 }
 
 const getRecords = async(bb) => {

@@ -5,7 +5,11 @@
       <div class="col col-8 q-pa-md">
         <div class="q-pa-md q-gutter-sm">
           <h4 class="text-h5">Latest IPOs</h4>
-          <q-btn outline v-for="ip in latestIpos" :key="ip.ipo_id" :label="ip.company_name" @click="goTo(ip)" />
+          <q-btn outline v-for="ip in latestIpos.ipos" :key="ip.ipo_id" :label="ip.company_name" @click="goTo(ip)" />
+        </div>
+        <div class="q-pa-md q-gutter-sm">
+          <h4 class="text-h5">Latest SME IPOs</h4>
+          <q-btn outline v-for="ip in latestIpos.smes" :key="ip.ipo_id" :label="ip.company_name" @click="goTo(ip)" />
         </div>
         <div class="q-pa-md">
         <q-select 
@@ -42,8 +46,12 @@ const iposOpt = ref([])
 const router = useRouter()
 const latestIpos = ref([])
 
+
 const getLatestIpos = () => {
-  latestIpos.value = ipos.value.slice(0, 8)
+  let smes = ipos.value.filter(ip => ip.ipo_type === 'SME')
+  let iposMain = ipos.value.filter( ip => ip.ipo_type !== 'SME') 
+  latestIpos.value.smes = smes.slice(0, 8)
+  latestIpos.value.ipos = iposMain.slice(0, 8)
 }
 const filterFn = (val, update, abort) => {
   update(() => {
@@ -56,11 +64,19 @@ const goTo = (ip) => {
   if(ip){
     ipo.value = ip
   }
-    router.push('/ipo/'+ipo.value.ipo_id+'-'+encodeURIComponent(ipo.value.company_name))  
+  if(ipo.value.ipo_type === 'SME'){
+    router.push('/sme/'+ipo.value.ipo_id+'-'+encodeURIComponent(ipo.value.company_name)) 
+  }
+  else{
+    router.push('/ipo/'+ipo.value.ipo_id+'-'+encodeURIComponent(ipo.value.company_name)) 
+  }
+   
 }
 onMounted(async() => {
-  ipos.value = await axios.get('https://droplet.netserve.in/ipos?sort=-open_date').then(r => r.data)
+  ipos.value = await axios.get('https://droplet.netserve.in/ipos?fields=ipo_id,company_name,ipo_type&sort=-open_date').then(r => r.data)
   iposOpt.value = ipos.value
+
+  console.log(ipos.value)
   /*
   ipos.value.sort(function(a,b){
     return new Date(b.open_date) - new Date(a.open_date)
@@ -69,25 +85,8 @@ onMounted(async() => {
   getLatestIpos()
 })
 /*
-let looser = {
-  method: 'GET',
-  url: 'https://nse-data1.p.rapidapi.com/top_loosers',
-  headers: {
-    'x-rapidapi-host': 'nse-data1.p.rapidapi.com',
-    'x-rapidapi-key': '05786c58f6msh0470f5aa4321575p1bf83fjsn2a2c79e27994'
-  }
-}
 
-let gainer = {
-  method: 'GET',
-  url: 'https://nse-data1.p.rapidapi.com/top_gainers',
-  headers: {
-    'x-rapidapi-host': 'nse-data1.p.rapidapi.com',
-    'x-rapidapi-key': '05786c58f6msh0470f5aa4321575p1bf83fjsn2a2c79e27994'
-  }
-}
-const nseLoosers = ref({})
-const nseGainers = ref({})
+//generate UPI QR Code sample
 
 const qrsource = ref('')
 onMounted(async() => {

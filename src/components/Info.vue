@@ -2,7 +2,7 @@
     <q-card flat class="q-mt-md rounded-border bg-orange-1">
       <q-card-section>
       <div class="text-h3 q-pb-xl">About the Company</div>
-        <div class="wp-style" v-html="html" />
+      <div class="wp-style" v-html="html" />
       </q-card-section>
     </q-card>
 </template>
@@ -99,5 +99,6 @@ h3{
   padding: 5px;
   text-align: left;
 }
+
 
 </style>
