@@ -85,10 +85,7 @@
             <div class="col"><q-input outlined v-model="buyback.total_shares" label="Total Shares of the Company" /></div>
             <div class="col"><q-input outlined v-model="buyback.free_float" label="Shares in Public (Freefloat)" /></div>
           </div>
-           <div class="row q-gutter-md q-mt-md">
-            <div class="col"><q-input outlined v-model="buyback.deliverable_nse" label="Deliverable at NSE" /></div>
-            <div class="col"><q-input outlined v-model="buyback.deliverable_bse" label="Deliverable at BSE" /></div>
-          </div>
+          
           <div class="row q-gutter-md q-mt-md">
             <div class="col">
               <q-input filled v-model="buyback.start_date" label="Start Date">
@@ -155,6 +152,10 @@
             <div class="col"><q-input outlined v-model="record.nse" label="NSE" /></div>
             <div class="col"><q-input outlined v-model="record.bse" label="BSE" /></div>
           </div>
+           <div class="row q-gutter-md q-mt-md">
+            <div class="col"><q-input outlined v-model="record.deliverable_nse" label="Deliverable at NSE" /></div>
+            <div class="col"><q-input outlined v-model="record.deliverable_bse" label="Deliverable at BSE" /></div>
+          </div>
           <div class="row q-gutter-md q-mt-md">
             <div class="col"><q-input outlined v-model="record.amount" label="Total Amount" /></div>
           </div>
@@ -182,7 +183,9 @@ const newRecordModal = ref(false)
 const columns = [
   { name: 'date', align: 'left', label: 'Date', field: 'record_date'},
   { name: 'bse', align: 'left', label: 'BSE', field: 'bse'},
+  { name: 'pc_bse', align: 'left', label: '%', field: 'pc_bse'},
   { name: 'nse', align: 'left', label: 'NSE', field: 'nse'},
+  { name: 'pc_nse', align: 'left', label: '%', field: 'pc_nse'},
   { name: 'total', align: 'left', label: 'Total', field: 'total'},
   { name: 'amount', align: 'left', label: 'Amount', field: 'amount'},
   { name: 'avg', align: 'left', label: 'Average Price', field: 'avg'},
@@ -215,8 +218,9 @@ const getRecords = async(bb) => {
   records.value.forEach((rec, i) => {
     rec.total = +(rec.bse) + +(rec.nse)
     rec.avg = (rec.amount / rec.total).toFixed(2)
-    
-    rec.cum_amount = records.value.slice(0, i+1).reduce((a, b) => a + +(b.amount), 0)
+    rec.pc_bse = (rec.deliverable_bse) ? (rec.bse * 100 / rec.deliverable_bse).toFixed(2) : 'NA'
+    rec.pc_nse = (rec.deliverable_nse) ? (rec.nse * 100 / rec.deliverable_nse).toFixed(2) : 'NA'
+    rec.cum_amount = records.value.slice(0, i+1).reduce((a, b) => a + +(b.amount), 0).toFixed(2)
     rec.cum_qty = records.value.slice(0, i+1).reduce((a, b) => (a + +(b.bse) + +(b.nse)), 0) 
     rec.pc_utilised = (rec.cum_amount * 100 / bb.buyback_size).toFixed(2)
     /*
@@ -250,6 +254,8 @@ const editRecord = (e, r, i) => {
   record.value = {
     id: r.id,
     bse: r.bse,
+    deliverable_bse: r.deliverable_bse,
+    deliverable_nse: r.deliverable_nse,
     nse: r.nse,
     amount: r.amount,
     total: r.total

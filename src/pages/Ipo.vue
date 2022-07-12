@@ -431,7 +431,7 @@
                 </div>
             </q-card-section>
             <q-card-section>
-                <pre>{{ipo}}</pre>
+                <pre></pre>
             </q-card-section>
         </q-card>
    </q-page>
