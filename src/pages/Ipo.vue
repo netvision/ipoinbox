@@ -541,7 +541,7 @@ const sanitize = (html) => html.replace(/>\s+</g,'><')
         router.push({name: 'sme', params: { id: ipo.value.ipo_id+'-'+encodeURIComponent(ipo.value.company_name) }})
     }
     let prenext = await axios.get('https://droplet.netserve.in/ipo/prenext?d='+ipo.value.open_date).then(r => r.data)
-    console.log(prenext)
+    //console.log(prenext)
     pre.value = prenext.pre[prenext.pre.findIndex(x => x.ipo_id === ipo.value.ipo_id) + 1]
     nxt.value = prenext.next[prenext.next.findIndex(x => x.ipo_id === ipo.value.ipo_id) + 1]
     //console.log(nxt.value)
@@ -555,7 +555,7 @@ const sanitize = (html) => html.replace(/>\s+</g,'><')
     //console.log(listingNse.value)
     if(listingNse.value && listingNse.value.scrip_code){
         let live = await axios.get('https://stockapi.ipoinbox.com/quote?companyName='+listingNse.value.scrip_code.trim()).then(r => r.data)
-        //console.log(live)
+        console.log(live)
         if(live.data[0]){
             nseLive.value = live.data[0]
             nseLive.value.lastUpdate = live.lastUpdateTime
@@ -567,6 +567,7 @@ const sanitize = (html) => html.replace(/>\s+</g,'><')
     }
     
     
+
     //console.log(dayEnd.value)
     if(ipo.value.promoters.length > 0){
         var TotalpreOffer = 0
@@ -578,10 +579,12 @@ const sanitize = (html) => html.replace(/>\s+</g,'><')
             TotalprePercent += promoter.pre_offer_percentage
             TotalpostOffer += promoter.post_offer_shares
             TotalpostPercent += promoter.post_offer_percentage
-            let holding = {name: promoter.name, preOffer: promoter.pre_offer_shares, prePercent: promoter.pre_offer_percentage, postOffer: promoter.post_offer_shares, postPercent: promoter.post_offer_percentage}
             let pr = {name: promoter.name, type: promoter.type, photo: promoter.photo, description: promoter.description}
             promoters.value.push(pr)
-            holdings.value.push(holding)
+            if(promoter.pre_offer_shares > 0) {
+                let holding = {name: promoter.name, preOffer: promoter.pre_offer_shares, prePercent: promoter.pre_offer_percentage, postOffer: promoter.post_offer_shares, postPercent: promoter.post_offer_percentage}
+                holdings.value.push(holding)
+            }
         })
         if(ipo.value.promoters.length > 1){
             holdings.value.push({name: 'Total', preOffer: TotalpreOffer, prePercent: TotalprePercent.toFixed(2), postOffer: TotalpostOffer, postPercent: TotalpostPercent.toFixed(2)})
@@ -589,6 +592,7 @@ const sanitize = (html) => html.replace(/>\s+</g,'><')
       }
     if(ipo.value.financials){
         financials.value = JSON.parse(ipo.value.financials)
+        console.log(financials.value )
     }
     if(ipo.value.peers){
         peers.value = JSON.parse(ipo.value.peers)

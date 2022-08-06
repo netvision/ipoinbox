@@ -7,6 +7,7 @@ const routes = [
       { path: '', component: () => import('pages/Index.vue') },
       { path: '/ipolist', component: () => import('pages/IpoList.vue') },
       { path: '/ofs', component: () => import('pages/Ofs.vue') },
+      { path: '/ffmc', component: () => import('pages/FreeFloat.vue') },
       { path: '/ombbs', component: () => import('pages/BuybackOpen.vue') },
       { path: '/ipo/:id', name: 'ipo', component: () => import('pages/Ipo.vue') },
       { path: '/sme/:id', name: 'sme', component: () => import('pages/Sme.vue') }
