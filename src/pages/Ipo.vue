@@ -16,7 +16,7 @@
             </q-card-section>
 
             <!-- Current Overview -->
-            <q-card-section v-if="listingNse">
+            <q-card-section v-if="listingNse && listingNse.listing_date">
                 <div class="row q-col-gutter-sm">
                     <div class="col-12 col-md-4 bg-orange-1">
                         <div v-if="nseLive" id="nse-live" class="bg-orange-3">
@@ -701,6 +701,11 @@ h3{
 .wp-style ul ul{
   margin-left:4vw;
   list-style: circle inside;
+}
+
+.wp-style ul ol{
+    margin-left:4vw;
+    list-style: lower-roman inside;
 }
 
 .wp-style .contact{
