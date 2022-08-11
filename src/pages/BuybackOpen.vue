@@ -149,15 +149,15 @@
               </q-input>
           </div>
           <div class="row q-gutter-md q-mt-md">
-            <div class="col"><q-input outlined v-model="record.nse" label="NSE" /></div>
-            <div class="col"><q-input outlined v-model="record.bse" label="BSE" /></div>
+            <div class="col"><q-input outlined v-model="record.nse" label="NSE" @blur = "sanitizeVal(record.nse, 'nse')" /></div>
+            <div class="col"><q-input outlined v-model="record.bse" label="BSE" @blur = "sanitizeVal(record.bse, 'bse')" /></div>
           </div>
            <div class="row q-gutter-md q-mt-md">
-            <div class="col"><q-input outlined v-model="record.deliverable_nse" label="Deliverable at NSE" /></div>
-            <div class="col"><q-input outlined v-model="record.deliverable_bse" label="Deliverable at BSE" /></div>
+            <div class="col"><q-input outlined v-model="record.deliverable_nse" label="Deliverable at NSE" @blur = "sanitizeVal(record.deliverable_nse, 'deliverable_nse')" /></div>
+            <div class="col"><q-input outlined v-model="record.deliverable_bse" label="Deliverable at BSE" @blur = "sanitizeVal(record.deliverable_bse, 'deliverable_bse')" /></div>
           </div>
           <div class="row q-gutter-md q-mt-md">
-            <div class="col"><q-input outlined v-model="record.amount" label="Total Amount" /></div>
+            <div class="col"><q-input outlined v-model="record.amount" label="Total Amount" @blur = "sanitizeVal(record.amount, 'amount')" /></div>
           </div>
         </q-card-section>
         <q-separator />
@@ -206,6 +206,11 @@ const curFormat = (val) => {
     return (val/10000000).toFixed(2) + ' Cr';
 }
 
+const sanitizeVal = (v, f) => {
+  const val = Math.abs(v.replace(/(,|[^\d.-]+)+/g, ''))
+  record.value[f] = val
+}
+
 const getRecords = async(bb) => {
   cur_buyback.value = bb
   cur_buyback.value.shares_at_mmprice = (bb.buyback_size / bb.buyback_price_maximum).toFixed(0)
@@ -251,6 +256,7 @@ const addRecord = async(bb) => {
 }
 
 const editRecord = (e, r, i) => {
+  console.log(r)
   record.value = {
     id: r.id,
     bse: r.bse,
@@ -258,7 +264,8 @@ const editRecord = (e, r, i) => {
     deliverable_nse: r.deliverable_nse,
     nse: r.nse,
     amount: r.amount,
-    total: r.total
+    total: r.total,
+    record_date: r.record_date
   }
   newRecordModal.value = true
 }
