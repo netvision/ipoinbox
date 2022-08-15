@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col" id="bse">
+        <div class="col" id="bse" v-if="html">
             <table class="tw-min-w-ful ofs">
             <tr>
             <th>Price Interval</th><th>BSE Bids</th><th>BSE Confirmed</th><th>NSE Bids</th><th>NSE Confirmed</th><th>Accumulated</th>
@@ -28,6 +28,9 @@
                 <td>{{item.price}}</td><td>{{item.bsebids}}</td><td>{{item.bseConfirmed}}</td><td>{{item.nsebids}}</td><td>{{item.nseConfirmed}}</td><td>{{item.acc}}</td>
             </tr>
             </table>
+        </div>
+        <div v-else>
+        Loading
         </div>
     </div>
 </q-page>
@@ -45,7 +48,7 @@ const nseData = ref()
 const refresh = ref()
 
 const getData = async() => {
-    console.log(bsecode.value)
+    html.value = null
     if(ofstype.value === 'Retail'){
         bseUrl.value = 'https://www.bseindia.com/markets/PublicIssues/BSEBidDetails_ofs.aspx?flag=R&Scripcode='+bsecode.value
         nseUrl.value = 'https://stockapi.ipoinbox.com/ofs?type=retail&symbol='+nsecode.value
