@@ -6,6 +6,9 @@
         <q-select v-model="ofstype" :options="['Retail', 'Non-retail']" label="OFS Type" />
         </div>
         <div class="col">
+        <q-input v-model="nsecode" label="NSE Scrip Symbol" type="text" />
+        </div>
+        <div class="col">
         <q-input v-model="bsecode" label="BSE Scrip Code" type="text" />
         </div>
         <div class="col">
@@ -34,9 +37,9 @@ import {ref, onMounted } from 'vue'
 import { axios } from '../boot/axios'
 const ofstype = ref()
 const bsecode = ref()
+const nsecode = ref()
 const bseUrl = ref()
 const nseUrl = ref()
-const nseRetailUrl = 'https://stockapi.ipoinbox.com/nseofsretail'
 const html = ref()
 const nseData = ref()
 const refresh = ref()
@@ -45,18 +48,18 @@ const getData = async() => {
     console.log(bsecode.value)
     if(ofstype.value === 'Retail'){
         bseUrl.value = 'https://www.bseindia.com/markets/PublicIssues/BSEBidDetails_ofs.aspx?flag=R&Scripcode='+bsecode.value
-        nseUrl.value = 'https://stockapi.ipoinbox.com/nseofsretail'
+        nseUrl.value = 'https://stockapi.ipoinbox.com/ofs?type=retail&symbol='+nsecode.value
     }
     else {
         bseUrl.value = 'https://www.bseindia.com/markets/PublicIssues/BSEBidDetails_ofs.aspx?flag=NR&Scripcode='+bsecode.value
-        nseUrl.value = 'https://stockapi.ipoinbox.com/nseofs'
+        nseUrl.value = 'https://stockapi.ipoinbox.com/ofs?symbol='+nsecode.value
     }
     nseData.value = await axios.get(nseUrl.value).then(r => r.data)
     
     let parser = new DOMParser()
     let bseOfs = await axios.get(bseUrl.value)
-    let rows = parser.parseFromString(bseOfs.data, 'text/html').getElementById('divID').querySelectorAll('td tr')
-    if(rows && rows.length > 0 && nseData.value.data){
+    let rows = parser.parseFromString(bseOfs.data, 'text/html').getElementById('divID').querySelectorAll('tr tr')
+    if(rows && rows.length > 0 && nseData.value){
         let trs = []
         rows.forEach((row, i) => {
         if(i > 1){
@@ -79,8 +82,8 @@ const getData = async() => {
 }
 
 const processData = (bse, nse) => {
-    let bsePrices = bse.map(x => x.price)
-    let nsePrices = nse.data.map(y => y.pri)
+    let bsePrices = bse.map(x => +x.price)
+    let nsePrices = nse.map(y => +y.pri)
     let prices = [...nsePrices, ...bsePrices].sort(function(a, b){return b - a});
     let uniqPri = [...new Set(prices)]
     
@@ -89,7 +92,7 @@ const processData = (bse, nse) => {
     uniqPri.forEach(pri => {
        if(!isNaN(pri)){
            let bData = bse.find(x => x.price == pri)
-       let nData = nse.data.find(y => y.pri == pri)
+       let nData = nse.find(y => y.pri == pri)
        let nseConfirmed = (nData?.conQty.replace(/,/g,"")) ? nData?.conQty.replace(/,/g,"") : 0
         let bseConfirmed = (bData?.confirmed.replace(/,/g,"")) ? bData?.confirmed.replace(/,/g,"") : 0
         acc = acc + +nseConfirmed + +bseConfirmed
@@ -111,9 +114,10 @@ onMounted(() => {
     nseUrl.value = 'https://stockapi.ipoinbox.com/nseofs'
     //setInterval(getData, 5000)
     */
-    ofstype.value = 'Retail'
-    bsecode.value = '506222'
-    refresh.value = 5
+    ofstype.value = 'Non-retail'
+    bsecode.value = '542760'
+    nsecode.value = 'SWSOLAR'
+    refresh.value = 10
     setInterval(getData, refresh.value * 1000)
 })
 </script>
