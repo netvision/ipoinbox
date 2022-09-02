@@ -410,7 +410,7 @@
 
             <!-- SWOT Analysis -->
             <q-card-section id="swot" v-if="swt">
-                <div class="text-h5 q-pa-md" style="font-family: 'Josefin Sans', sans-serif;">SWOT Analysis</div>
+                <div class="text-h5" style="font-family: 'Josefin Sans', sans-serif;">SWOT Analysis</div>
                 <div class="row q-col-gutter-sm">
                     <div class="col-12 col-md-3 q-pa-md tw-h-full bg-orange-1">
                             <h6 class="text-h6">Strengths <span v-if="swt.strengths_score">({{swt.strengths_score}})</span></h6>
@@ -430,8 +430,26 @@
                     </div>
                 </div>
             </q-card-section>
-            <q-card-section>
-                <pre></pre>
+            <q-card-section id="subscriptions" v-if="subscriptions">
+                <div class="text-h5" style="font-family: 'Josefin Sans', sans-serif;">Subscriptions</div>
+                <table class="tw-table-fixed tw-w-full tw-border">
+                    <thead class="tw-bg-gray-200">
+                    <tr class="tw-border tw-border-gray-400">
+                    <th class="tw-border tw-border-gray-400">Day</th><th class="tw-border tw-border-gray-400" v-for="log in subscriptions[0]?.logs" :key="log.id"><span v-if="log.cat_id === 4 && log.ipo_id === 398">Policyholders</span><span v-else>{{log.cat.short_name}}</span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="sub in subscriptions" :key="sub.day" class="tw-border tw-border-gray-400">
+                        <td class="tw-px-4 tw-py-2 tw-text-gray-900 tw-whitespace-nowrap tw-border tw-border-gray-400">
+                        {{date.formatDate(sub.day, 'DD MMM, YYYY')}}
+                        </td>
+                        <td v-for="l in sub.logs" :key="l.id" class="tw-px-4 tw-py-2 tw-text-gray-900 tw-whitespace-nowrap tw-border tw-border-gray-400">
+                        <div v-if="l.cat_id === 1">{{subTimes(netQib, l.subscription)}}<span v-if="l.applications">( <q-icon name="content_copy" />{{l.applications}} )</span></div>
+                        <div v-else>{{subTimes(l.quota.quota, l.subscription)}} <span v-if="l.applications">( <q-icon name="content_copy" />{{l.applications}} )</span></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </q-card-section>
         </q-card>
    </q-page>
@@ -471,6 +489,9 @@
   const style = {
         background: "orange"
     }
+
+const subscriptions = ref([])
+const netQib = ref(0)
 
   
   const parseToCr = (str) => {
@@ -535,82 +556,130 @@ const formatNum = (num) => {
 
 const sanitize = (html) => html.replace(/>\s+</g,'><')
 
-  onMounted(async() => {
-    ipo.value = await axios.get('https://droplet.netserve.in/ipos/'+ipo_id.value+'?expand=registrar,promoters,listings,sector').then(r => r.data)
-    if(ipo.value.ipo_type === 'SME') {
-        router.push({name: 'sme', params: { id: ipo.value.ipo_id+'-'+encodeURIComponent(ipo.value.company_name) }})
-    }
-    let prenext = await axios.get('https://droplet.netserve.in/ipo/prenext?d='+ipo.value.open_date).then(r => r.data)
-    //console.log(prenext)
-    pre.value = prenext.pre[prenext.pre.findIndex(x => x.ipo_id === ipo.value.ipo_id) + 1]
-    nxt.value = prenext.next[prenext.next.findIndex(x => x.ipo_id === ipo.value.ipo_id) + 1]
-    //console.log(nxt.value)
-    // let nifty = await axios.get('https://stockapi.ipoinbox.com/quote?companyName='+nse.value.scrip_code).then(r => r.data)
-    
-    listingNse.value = (ipo.value.listings && ipo.value.listings.length > 0) ? ipo.value.listings.filter(list => list.exchange === 'NSE')[0] : null
-    listingBse.value = (ipo.value.listings && ipo.value.listings.length > 0) ? ipo.value.listings.filter(list => list.exchange === 'BSE')[0] : null
-
-    listingClose.value = (listingNse.value && listingNse.value.close) ? listingNse.value.close : 0
-    
-    //console.log(listingNse.value)
-    if(listingNse.value && listingNse.value.scrip_code){
-        let live = await axios.get('https://stockapi.ipoinbox.com/quote?companyName='+listingNse.value.scrip_code.trim()).then(r => r.data)
-        console.log(live)
-        if(live.data[0]){
-            nseLive.value = live.data[0]
-            nseLive.value.lastUpdate = live.lastUpdateTime
+const getSubscriptions = async() => {
+    let subs = await axios.get('https://droplet.netserve.in/ipo-subscription-logs?expand=cat,quota&ipo_id='+ipo.value.ipo_id).then(r => r.data)
+    let start = new Date(ipo.value.open_date)
+    let end = new Date(ipo.value.close_date)
+    let subsArray = []
+    for(let i = 0; i <= date.getDateDiff(end, start, 'days'); i++){
+        let day = date.addToDate(start, {days: i})
+        let dlogs = []
+        let logs = subs.filter(sub => sub.day == date.formatDate(day, 'YYYY-MM-DD'))
+        let qib = logs.filter(log => log.cat_id == 1)
+        let bigHni = logs.filter(log => log.cat_id == 2)
+        let smallHni = logs.filter(log => log.cat_id == 8)
+        let retail = logs.filter(log => log.cat_id == 3)
+        let employee = logs.filter(log => log.cat_id == 5)
+        let shareholder = logs.filter(log => log.cat_id == 4)
+        if(qib && qib.length > 0) dlogs.push(qib[0])
+        if(bigHni && bigHni.length > 0) dlogs.push(bigHni[0])
+        if(smallHni && smallHni.length > 0) dlogs.push(smallHni[0])
+        if(retail && retail.length > 0) dlogs.push(retail[0])
+        if(employee && employee.length > 0) dlogs.push(employee[0])
+        if(shareholder && shareholder.length > 0) dlogs.push(shareholder[0])
+        
+        if(dlogs.length > 0) subsArray.push({day: day, logs: dlogs})
         }
+    return subsArray
+}
 
-        liveClose.value = nseLive.value.lastPrice || 0 
+const getNetQib = async() => {
+    let quotas = await axios.get('https://droplet.netserve.in/ipo-cat-quota?ipo_id='+ipo.value.ipo_id).then(r => r.data)
+    let qib = quotas.filter(q => q.cat_id === 1)
+    let anchor = quotas.filter(q => q.cat_id === 6)
+    qib = (qib && qib.length > 0) ? qib[0].quota : 0
+    anchor = (anchor && anchor.length > 0) ? anchor[0].quota : 0
+    return qib - anchor
+}
 
-        dayEnd.value = await axios.get('https://droplet.netserve.in/nse/dayend?s='+listingNse.value.scrip_code).then(r => r.data)
+const subTimes = (quota, subs) => {
+  if(subs > 0 && quota > 0){
+    return (subs/quota).toFixed(2)+'x'
+  }
+  else return 'NA'
+}
+
+onMounted(async() => {
+ipo.value = await axios.get('https://droplet.netserve.in/ipos/'+ipo_id.value+'?expand=registrar,promoters,listings,sector,subscriptions').then(r => r.data)
+if(ipo.value.ipo_type === 'SME') {
+    router.push({name: 'sme', params: { id: ipo.value.ipo_id+'-'+encodeURIComponent(ipo.value.company_name) }})
+}
+let prenext = await axios.get('https://droplet.netserve.in/ipo/prenext?d='+ipo.value.open_date).then(r => r.data)
+//console.log(prenext)
+pre.value = prenext.pre[prenext.pre.findIndex(x => x.ipo_id === ipo.value.ipo_id) + 1]
+nxt.value = prenext.next[prenext.next.findIndex(x => x.ipo_id === ipo.value.ipo_id) + 1]
+//console.log(nxt.value)
+// let nifty = await axios.get('https://stockapi.ipoinbox.com/quote?companyName='+nse.value.scrip_code).then(r => r.data)
+
+listingNse.value = (ipo.value.listings && ipo.value.listings.length > 0) ? ipo.value.listings.filter(list => list.exchange === 'NSE')[0] : null
+listingBse.value = (ipo.value.listings && ipo.value.listings.length > 0) ? ipo.value.listings.filter(list => list.exchange === 'BSE')[0] : null
+
+listingClose.value = (listingNse.value && listingNse.value.close) ? listingNse.value.close : 0
+
+//console.log(listingNse.value)
+if(listingNse.value && listingNse.value.scrip_code){
+    let live = await axios.get('https://stockapi.ipoinbox.com/quote?companyName='+listingNse.value.scrip_code.trim()).then(r => r.data)
+    //console.log(live)
+    if(live.data[0]){
+        nseLive.value = live.data[0]
+        nseLive.value.lastUpdate = live.lastUpdateTime
     }
-    
-    
 
-    //console.log(dayEnd.value)
-    if(ipo.value.promoters.length > 0){
-        var TotalpreOffer = 0
-        var TotalprePercent = 0
-        var TotalpostOffer = 0
-        var TotalpostPercent = 0
-        ipo.value.promoters.forEach(promoter => {
-            TotalpreOffer += promoter.pre_offer_shares
-            TotalprePercent += promoter.pre_offer_percentage
-            TotalpostOffer += promoter.post_offer_shares
-            TotalpostPercent += promoter.post_offer_percentage
-            let pr = {name: promoter.name, type: promoter.type, photo: promoter.photo, description: promoter.description}
-            promoters.value.push(pr)
-            if(promoter.pre_offer_shares > 0) {
-                let holding = {name: promoter.name, preOffer: promoter.pre_offer_shares, prePercent: promoter.pre_offer_percentage, postOffer: promoter.post_offer_shares, postPercent: promoter.post_offer_percentage}
-                holdings.value.push(holding)
-            }
-        })
-        if(ipo.value.promoters.length > 1){
-            holdings.value.push({name: 'Total', preOffer: TotalpreOffer, prePercent: TotalprePercent.toFixed(2), postOffer: TotalpostOffer, postPercent: TotalpostPercent.toFixed(2)})
+    liveClose.value = nseLive.value.lastPrice || 0 
+
+    dayEnd.value = await axios.get('https://droplet.netserve.in/nse/dayend?s='+listingNse.value.scrip_code).then(r => r.data)
+}
+
+
+
+//console.log(dayEnd.value)
+if(ipo.value.promoters.length > 0){
+    var TotalpreOffer = 0
+    var TotalprePercent = 0
+    var TotalpostOffer = 0
+    var TotalpostPercent = 0
+    ipo.value.promoters.forEach(promoter => {
+        TotalpreOffer += promoter.pre_offer_shares
+        TotalprePercent += promoter.pre_offer_percentage
+        TotalpostOffer += promoter.post_offer_shares
+        TotalpostPercent += promoter.post_offer_percentage
+        let pr = {name: promoter.name, type: promoter.type, photo: promoter.photo, description: promoter.description}
+        promoters.value.push(pr)
+        if(promoter.pre_offer_shares > 0) {
+            let holding = {name: promoter.name, preOffer: promoter.pre_offer_shares, prePercent: promoter.pre_offer_percentage, postOffer: promoter.post_offer_shares, postPercent: promoter.post_offer_percentage}
+            holdings.value.push(holding)
         }
-      }
-    if(ipo.value.financials){
-        financials.value = JSON.parse(ipo.value.financials)
-        console.log(financials.value )
-    }
-    if(ipo.value.peers){
-        peers.value = JSON.parse(ipo.value.peers)
-    }
-
-    if(ipo.value.brlms_json){
-        brlms.value = JSON.parse(ipo.value.brlms_json)
-    }
-
-    if(ipo.value.swot){
-        swt.value = JSON.parse(ipo.value.swot)
-    }
-    
-    useMeta({
-      title: ipo.value.company_name,
-      titleTemplate: title => `${title} - IPO Inbox`,
     })
-  })
+    if(ipo.value.promoters.length > 1){
+        holdings.value.push({name: 'Total', preOffer: TotalpreOffer, prePercent: TotalprePercent.toFixed(2), postOffer: TotalpostOffer, postPercent: TotalpostPercent.toFixed(2)})
+    }
+    }
+if(ipo.value.financials){
+    financials.value = JSON.parse(ipo.value.financials)
+    //console.log(financials.value )
+}
+if(ipo.value.peers){
+    peers.value = JSON.parse(ipo.value.peers)
+}
+
+if(ipo.value.brlms_json){
+    brlms.value = JSON.parse(ipo.value.brlms_json)
+}
+
+if(ipo.value.swot){
+    swt.value = JSON.parse(ipo.value.swot)
+}
+
+subscriptions.value = await getSubscriptions()
+netQib.value = await getNetQib()
+
+console.log(netQib.value)
+
+useMeta({
+    title: ipo.value.company_name,
+    titleTemplate: title => `${title} - IPO Inbox`,
+})
+})
 </script>
 <style>
 .fixed_right{
