@@ -494,15 +494,15 @@ const subscriptions = ref([])
 const netQib = ref(0)
 
   
-  const parseToCr = (str) => {
+const parseToCr = (str) => {
     let n = Number(str.replace(/,/g, ""))
     return (n/100).toFixed(2)
-    }
+}
 
-  const nextIpo = (ipo) => {
-       
-       router.push({name: 'ipo', params: { id: ipo.ipo_id+'-'+encodeURIComponent(ipo.company_name) }})
-    }
+const nextIpo = (ipo) => {
+    
+    router.push({name: 'ipo', params: { id: ipo.ipo_id+'-'+encodeURIComponent(ipo.company_name) }})
+}
 
 const cagr = () => {
     //str.replace(/,/g, "")

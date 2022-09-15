@@ -74,14 +74,14 @@ const getData = async() => {
                 if(j === 1) td.bids = col.textContent
                 if(j === 2) td.confirmed = col.textContent
             })
-            
+            //console.log(td)
             trs.push(td)
         }
         })
         html.value = processData(trs, nseData.value).reverse()
     }
     else html.value = {}
-    console.log('ok')
+    
 }
 
 const processData = (bse, nse) => {
@@ -89,12 +89,11 @@ const processData = (bse, nse) => {
     let nsePrices = nse.map(y => +y.pri)
     let prices = [...nsePrices, ...bsePrices].sort(function(a, b){return b - a});
     let uniqPri = [...new Set(prices)]
-    
     let final = []
     let acc = 0
     uniqPri.forEach(pri => {
        if(!isNaN(pri)){
-           let bData = bse.find(x => x.price == pri)
+           let bData = bse.find(x => +x.price.replace(/,/g,"") == pri)
        let nData = nse.find(y => y.pri == pri)
        let nseConfirmed = (nData?.conQty.replace(/,/g,"")) ? nData?.conQty.replace(/,/g,"") : 0
         let bseConfirmed = (bData?.confirmed.replace(/,/g,"")) ? bData?.confirmed.replace(/,/g,"") : 0
@@ -108,6 +107,7 @@ const processData = (bse, nse) => {
         */
        
     })
+    console.log(final)
     return final
 }
 onMounted(() => {
@@ -118,8 +118,8 @@ onMounted(() => {
     //setInterval(getData, 5000)
     */
     ofstype.value = 'Non-retail'
-    bsecode.value = '542760'
-    nsecode.value = 'SWSOLAR'
+    bsecode.value = '543317'
+    nsecode.value = 'GRINFRA'
     refresh.value = 10
     setInterval(getData, refresh.value * 1000)
 })
