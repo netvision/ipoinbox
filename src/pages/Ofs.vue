@@ -12,7 +12,7 @@
         <q-input v-model="bsecode" label="BSE Scrip Code" type="text" />
         </div>
         <div class="col">
-        <q-select v-model="refresh" :options="[2, 3, 4, 5, 6, 7, 8, 9, 10]" label="Refresh After Seconds" />
+        <q-select v-model="refresh" :options="[2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30]" label="Refresh After Seconds" />
         </div>
         <div class="col">
             <q-btn label="Get Data" @click="getData" />
@@ -29,9 +29,7 @@
             </tr>
             </table>
         </div>
-        <div v-else>
-        Loading
-        </div>
+        
     </div>
 </q-page>
 </template>
@@ -107,7 +105,7 @@ const processData = (bse, nse) => {
         */
        
     })
-    console.log(final)
+    //console.log(final)
     return final
 }
 onMounted(() => {
@@ -117,10 +115,10 @@ onMounted(() => {
     nseUrl.value = 'https://stockapi.ipoinbox.com/nseofs'
     //setInterval(getData, 5000)
     */
-    ofstype.value = 'Non-retail'
-    bsecode.value = '543317'
-    nsecode.value = 'GRINFRA'
-    refresh.value = 10
+    ofstype.value = 'Retail'
+    bsecode.value = '517421'
+    nsecode.value = 'BUTTERFLY'
+    refresh.value = 30
     setInterval(getData, refresh.value * 1000)
 })
 </script>

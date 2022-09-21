@@ -57,6 +57,7 @@ for(let i = 0; i <= date.getDateDiff(end, start, 'days'); i++){
   if(dlogs.length > 0) subscriptions.value.push({day: day, logs: dlogs})
   
 }
+console.log(subscriptions.value)
 
 const subTimes = (quota, subs) => {
   if(subs > 0 && quota > 0){
