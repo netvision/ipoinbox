@@ -6,7 +6,7 @@
     <q-space />
     <div class="col text-right"><q-btn @click="newBuybackModal = true">Add New</q-btn></div>
   </div>
-    
+
     <q-list v-if="ombbs">
         <q-expansion-item v-for="bb in ombbs" :key="bb.id" @show="getRecords(bb)">
         <template v-slot:header>
@@ -30,10 +30,10 @@
               <p class="col">Buyback Size: <strong>&#8377;{{cur_buyback?.buyback_size}}</strong></p>
               <p class="col">Maximum Price: <strong>&#8377;{{cur_buyback?.buyback_price_maximum}}</strong></p>
               <p class="col">Total Share of the company: <strong>{{cur_buyback?.total_shares}}</strong></p>
-           
+
               <p class="col">No. of Shares at MM Price: <strong>{{cur_buyback?.shares_at_mmprice}}</strong></p>
               <p class="col">Percent of Total Shares: <strong>{{cur_buyback?.pc_of_total_shares}}%</strong></p>
-           
+
               <p class="col">Shares in Public: <strong>{{cur_buyback?.free_float}}</strong></p>
               <p class="col">Percent of Shares in Public: <strong>{{cur_buyback?.pc_of_freefloat}}%</strong></p>
             </div>
@@ -85,7 +85,7 @@
             <div class="col"><q-input outlined v-model="buyback.total_shares" label="Total Shares of the Company" /></div>
             <div class="col"><q-input outlined v-model="buyback.free_float" label="Shares in Public (Freefloat)" /></div>
           </div>
-          
+
           <div class="row q-gutter-md q-mt-md">
             <div class="col">
               <q-input filled v-model="buyback.start_date" label="Start Date">
@@ -118,7 +118,7 @@
               </q-input>
             </div>
           </div>
-            
+
         </q-card-section>
         <q-separator />
         <q-card-actions align="right">
@@ -226,7 +226,7 @@ const getRecords = async(bb) => {
     rec.pc_bse = (rec.deliverable_bse) ? (rec.bse * 100 / rec.deliverable_bse).toFixed(2) : 'NA'
     rec.pc_nse = (rec.deliverable_nse) ? (rec.nse * 100 / rec.deliverable_nse).toFixed(2) : 'NA'
     rec.cum_amount = records.value.slice(0, i+1).reduce((a, b) => a + +(b.amount), 0).toFixed(2)
-    rec.cum_qty = records.value.slice(0, i+1).reduce((a, b) => (a + +(b.bse) + +(b.nse)), 0) 
+    rec.cum_qty = records.value.slice(0, i+1).reduce((a, b) => (a + +(b.bse) + +(b.nse)), 0)
     rec.pc_utilised = (rec.cum_amount * 100 / bb.buyback_size).toFixed(2)
     /*
     if(i == 0){
@@ -240,7 +240,7 @@ const getRecords = async(bb) => {
     rec.pc_utilised = (rec.cum_amount * 100 / bb.buyback_size).toFixed(2)
     */
   })
-  
+
 }
 
 const addRecord = async(bb) => {

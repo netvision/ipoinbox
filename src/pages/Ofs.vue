@@ -17,8 +17,12 @@
         <div class="col">
             <q-btn label="Get Data" @click="getData" />
         </div>
+        <div class="col">
+            <q-btn label="Save" @click="saveData" />
+        </div>
     </div>
     <div class="row">
+
         <div class="col" id="bse" v-if="html">
             <table class="tw-min-w-ful ofs">
             <tr>
@@ -29,7 +33,7 @@
             </tr>
             </table>
         </div>
-        
+
     </div>
 </q-page>
 </template>
@@ -56,7 +60,7 @@ const getData = async() => {
         nseUrl.value = 'https://stockapi.ipoinbox.com/ofs?symbol='+nsecode.value
     }
     nseData.value = await axios.get(nseUrl.value).then(r => r.data)
-    
+
     let parser = new DOMParser()
     let bseOfs = await axios.get(bseUrl.value)
     let rows = parser.parseFromString(bseOfs.data, 'text/html').getElementById('divID').querySelectorAll('tr tr')
@@ -79,7 +83,7 @@ const getData = async() => {
         html.value = processData(trs, nseData.value).reverse()
     }
     else html.value = {}
-    
+
 }
 
 const processData = (bse, nse) => {
@@ -103,11 +107,27 @@ const processData = (bse, nse) => {
         let nData = nse.filter(y => y.pri == pri)[0]
         final.push({bse: bData, nse: nData})
         */
-       
+
     })
-    //console.log(final)
+    console.log(final)
     return final
 }
+const date = new Date()
+console.log(date.toISOString().split('T')[0])
+const saveData = async() => {
+    if(html.value) {
+        let data = {
+            nse_symbol: nsecode.value,
+            bse_code: bsecode.value,
+            date: date.toISOString().split('T')[0],
+            type: ofstype.value,
+            json_data: JSON.stringify(html.value)
+        }
+        let res = await axios.post('https://droplet.netserve.in/ofs-datas', data)
+    }
+
+}
+
 onMounted(() => {
    /*
     bseUrl.value = 'https://www.bseindia.com/markets/PublicIssues/BSEBidDetails_ofs.aspx?flag=NR&Scripcode=506222'
@@ -115,11 +135,11 @@ onMounted(() => {
     nseUrl.value = 'https://stockapi.ipoinbox.com/nseofs'
     //setInterval(getData, 5000)
     */
-    ofstype.value = 'Retail'
-    bsecode.value = '517421'
-    nsecode.value = 'BUTTERFLY'
+    ofstype.value = 'Non-retail'
+    bsecode.value = '542830'
+    nsecode.value = 'IRCTC'
     refresh.value = 30
-    setInterval(getData, refresh.value * 1000)
+    getData()
 })
 </script>
 <style>
@@ -136,7 +156,7 @@ onMounted(() => {
     flex: 1 1 20%;
 	text-align:center;
     border: 1px solid #333;
-    
+
 	padding:3px;
 }
 </style>
